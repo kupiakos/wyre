@@ -1,0 +1,39 @@
+syntax = "proto3";
+package wyre.proto;
+
+message DataChunk {
+	string description = 1;
+
+	enum Source {
+		FILE = 0;    // description contains the file path
+		COMMAND = 1; // description contains the command run
+	}
+	Source source = 2;
+	bytes data = 3; // The actual payload
+
+	bytes finalHash = 10; // 20-byte SHA-1 Sum
+	uint64 fileSize = 11;
+}
+
+message Error {
+	enum Type {
+		UNKNOWN = 0;
+		SUCCESS = 1;
+		FAILURE = 2;
+	}
+	Type type = 1;
+	string message = 2;
+}
+
+message PushFileResponse {
+	Error error = 1;
+}
+
+message RunCommandResponse {
+	Error error = 1;
+}
+
+service WyreService {
+	rpc PushFile(stream DataChunk) returns (PushFileResponse);
+	rpc RunCommand(stream DataChunk) returns (RunCommandResponse);
+}
