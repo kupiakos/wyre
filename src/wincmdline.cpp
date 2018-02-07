@@ -46,6 +46,7 @@ std::wstring escapeArg(const std::wstring & arg, bool forceQuote) {
 	}
 
 	result.push_back(L'"');
+	return result;
 }
 
 // Escape cmd.exe metacharacters.

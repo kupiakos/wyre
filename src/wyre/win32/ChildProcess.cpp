@@ -100,6 +100,7 @@ ChildProcess & ChildProcess::withArgv(const std::vector<std::string> & argv) {
 	auto it = argv.cbegin();
 	for (;;) {
 		wCmdLine.append(win32::escapeArg(unicode::utf8ToUtf16(*it), false));
+		++it;
 		if (it != argv.cend()) {
 			wCmdLine.push_back(L' ');
 		} else {
@@ -136,7 +137,7 @@ ChildProcess & ChildProcess::run() {
 		}
 	}
 
-	success = CreateProcess(nullptr,
+	success = CreateProcessW(nullptr,
 		&wCmdLine[0], // command line
 		nullptr,      // process security attributes
 		nullptr,      // primary thread security attributes

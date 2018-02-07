@@ -9,21 +9,20 @@
 
 namespace wyre {
 
-template<typename T>
-using deleter_t = void(*)(T);
-
-namespace {
-void _fclose(FILE * f) { fclose(f); }
-}
+template<typename ResourceType>
+using deleter_t = void(*)(ResourceType);
 
 template<typename T, T DefaultValue, deleter_t<T> Deleter>
 class SafeResource {
+public:
+	typedef T ResourceType;
+
 private:
-	T r;
+	ResourceType r;
 
 public:
 	SafeResource() : r(DefaultValue) {}
-	SafeResource(T r) : r(r) {}
+	SafeResource(ResourceType r) : r(r) {}
 	~SafeResource() {
 		close();
 	}
@@ -43,14 +42,15 @@ public:
 	}
 
 	operator bool() { return r != DefaultValue; }
-	operator T &() { return r; }
-	operator const T &() const { return r; }
-	T & get() { return r; }
-	const T & get() const { return r; }
-	T * operator&() { return &r; }
+	operator ResourceType &() { return r; }
+	operator const ResourceType &() const { return r; }
+	ResourceType & get() { return r; }
+	const ResourceType & get() const { return r; }
+	ResourceType * operator&() { return &r; }
+	static const ResourceType default() { return DefaultValue; }
 
-	T release() {
-		T v = r;
+	ResourceType release() {
+		ResourceType v = r;
 		r = DefaultValue;
 		return v;
 	}
@@ -63,17 +63,14 @@ public:
 	}
 };
 
+void _fclose(FILE * f);
 using SafeFile = SafeResource<FILE *, nullptr, _fclose>;
 
 static_assert(std::is_move_assignable<SafeFile>::value, "SafeFile is not move-assignable");
 
 #ifdef _WIN32
-
-namespace {
-void _CloseHandle(HANDLE h) { CloseHandle(h); }
-}
+void _CloseHandle(HANDLE h);
 using SafeHandle = SafeResource<HANDLE, INVALID_HANDLE_VALUE, _CloseHandle>;
-
 #endif
 
 }

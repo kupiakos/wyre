@@ -10,7 +10,7 @@
 
 #pragma warning (disable : 4146)
 
-#include "wyre.pb.h"
+//#include "wyre.pb.h"
 
 int wyre_main(std::vector<std::string> argv);
 
@@ -44,7 +44,7 @@ int wmain(int argc, wchar_t * wargv[]) {
 		return e.errorCode();
 	}
 	catch (const std::exception &e) {
-		fprintf(stderr, "Unhandled exception in Unicode: %s\n", e.what());
+		fprintf(stderr, "Unhandled exception: %s\n", e.what());
 		return ERROR_UNHANDLED_EXCEPTION;
 	}
 	return wyre_main(std::move(argv));
@@ -57,7 +57,8 @@ int main(int argc, char ** argv) {
 
 int wyre_main(std::vector<std::string> argv) {
 	// TODO: Refactor heavily
-	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	//GOOGLE_PROTOBUF_VERIFY_VERSION;
+	wprintf(L"Hello, world!");
 
 	if (argv.size() <= 2 ||
 			argv[1] == "-h" ||
@@ -65,18 +66,6 @@ int wyre_main(std::vector<std::string> argv) {
 		printUsage();
 		return 0;
 	}
-
-	using wyre::proto::DataChunk;
-
-	DataChunk c, c2;
-	c.set_data("Hello, world!");
-	c.set_source(DataChunk::COMMAND);
-
-	auto x = c.SerializeAsString();
-	c2.ParseFromString(x);
-	std::cout << c2.data() << std::endl;
-
-
 	std::string cmd = std::move(argv[1]);
 	argv.erase(argv.begin(), argv.begin() + 2);
 
@@ -84,16 +73,28 @@ int wyre_main(std::vector<std::string> argv) {
 
 	try {
 		if (cmd == "run") {
-			wyre::run(argv);
+			// TODO: move to parent
+			if (argv.size() < 2) {
+				printUsage();
+			} else {
+				wyre::run(argv);
+			}
 		} else if (cmd == "push") {
-			wyre::push(argv);
+			if (argv.size() != 2) {
+				printUsage();
+			} else {
+				wyre::push(argv);
+			}
 		} else {
 			printUsage();
 		}
+	} catch (const std::system_error &e) {
+		fprintf(stderr, "%s", e.what());
+		return e.code().value();
 	} catch (const std::exception &e) {
 		fprintf(stderr, "%s", e.what());
 	}
-	google::protobuf::ShutdownProtobufLibrary();
+	//google::protobuf::ShutdownProtobufLibrary();
 	return err;
 }
 

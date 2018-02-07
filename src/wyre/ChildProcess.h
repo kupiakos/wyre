@@ -43,6 +43,7 @@ public:
 	ChildProcess & run();
 
 	FILE * stdout_() { return _stdout; }
+	const std::string & cmdLine() { return _cmdLine; }
 	//FILE * stdout_() { return _stdout; }
 };
 
