@@ -278,6 +278,12 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::wyre::proto::DataChunk_Source source() const;
   void set_source(::wyre::proto::DataChunk_Source value);
 
+  // bool finished = 4;
+  void clear_finished();
+  static const int kFinishedFieldNumber = 4;
+  bool finished() const;
+  void set_finished(bool value);
+
   // uint64 fileSize = 11;
   void clear_filesize();
   static const int kFileSizeFieldNumber = 11;
@@ -292,6 +298,7 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::google::protobuf::internal::ArenaStringPtr data_;
   ::google::protobuf::internal::ArenaStringPtr finalhash_;
   int source_;
+  bool finished_;
   ::google::protobuf::uint64 filesize_;
   mutable int _cached_size_;
   friend struct ::protobuf_wyre_2eproto::TableStruct;
@@ -772,6 +779,20 @@ inline void DataChunk::set_allocated_data(::std::string* data) {
   }
   data_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), data);
   // @@protoc_insertion_point(field_set_allocated:wyre.proto.DataChunk.data)
+}
+
+// bool finished = 4;
+inline void DataChunk::clear_finished() {
+  finished_ = false;
+}
+inline bool DataChunk::finished() const {
+  // @@protoc_insertion_point(field_get:wyre.proto.DataChunk.finished)
+  return finished_;
+}
+inline void DataChunk::set_finished(bool value) {
+  
+  finished_ = value;
+  // @@protoc_insertion_point(field_set:wyre.proto.DataChunk.finished)
 }
 
 // bytes finalHash = 10;

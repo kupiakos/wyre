@@ -3,6 +3,7 @@
 namespace wyre {
 namespace unicode {
 
+#pragma warning (disable : 4996)
 inline bool onXP() {
 	return (DWORD)(LOBYTE(LOWORD(GetVersion()))) < 6;
 }

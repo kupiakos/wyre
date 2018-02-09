@@ -27,7 +27,11 @@ socket::socket(SocketDescriptor && sockfd) :
 }
 
 socket::socket(socket && other) :
-	std::iostream(std::move(other)), _buf(std::move(other._buf)) {}
+	std::iostream(std::move(other)),
+	_buf(std::move(other._buf)) {
+	other.rdbuf(nullptr);
+	this->rdbuf(_buf.get());
+}
 
 socket & socket::operator=(socket && other) {
 	swap(other);
@@ -35,8 +39,8 @@ socket & socket::operator=(socket && other) {
 }
 
 void socket::swap(socket & other) {
-	std::iostream::swap(other);
 	using std::swap;
+	swap(*this, other);
 	swap(_buf, other._buf);
 }
 
@@ -58,7 +62,7 @@ void socket::bind(const std::string & hostname, uint16_t port) {
 	int err;
 
 	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family = AF_UNSPEC;
+	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 
@@ -137,15 +141,14 @@ void socket::listen(int max_connections) {
 
 SocketDescriptor::ResourceType socket::sockfd() const {
 	if (!_buf) {
-		return SocketDescriptor::default();
+		return SocketDescriptor::defaultValue();
 	}
 	return _buf->sockfd();
 }
 
 void socket::setSocket(SocketDescriptor && sd) {
-	auto newBuf = std::make_unique<socketbuf>(std::move(sd));
-	this->rdbuf(newBuf.get());
-	_buf = std::move(newBuf);
+	_buf = std::make_unique<socketbuf>(std::move(sd));
+	this->rdbuf(_buf.get());
 	setf(std::ios_base::unitbuf);
 }
 

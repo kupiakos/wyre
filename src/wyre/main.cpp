@@ -10,7 +10,7 @@
 
 #pragma warning (disable : 4146)
 
-//#include "wyre.pb.h"
+#include "wyre.pb.h"
 
 int wyre_main(std::vector<std::string> argv);
 
@@ -57,8 +57,7 @@ int main(int argc, char ** argv) {
 
 int wyre_main(std::vector<std::string> argv) {
 	// TODO: Refactor heavily
-	//GOOGLE_PROTOBUF_VERIFY_VERSION;
-	wprintf(L"Hello, world!");
+	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
 	if (argv.size() <= 2 ||
 			argv[1] == "-h" ||
@@ -94,7 +93,7 @@ int wyre_main(std::vector<std::string> argv) {
 	} catch (const std::exception &e) {
 		fprintf(stderr, "%s", e.what());
 	}
-	//google::protobuf::ShutdownProtobufLibrary();
+	google::protobuf::ShutdownProtobufLibrary();
 	return err;
 }
 

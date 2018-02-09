@@ -47,7 +47,7 @@ public:
 	ResourceType & get() { return r; }
 	const ResourceType & get() const { return r; }
 	ResourceType * operator&() { return &r; }
-	static const ResourceType default() { return DefaultValue; }
+	static const ResourceType defaultValue() { return DefaultValue; }
 
 	ResourceType release() {
 		ResourceType v = r;

@@ -142,6 +142,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, description_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, source_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, data_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, finished_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, finalhash_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, filesize_),
   ~0u,  // no _has_bits_
@@ -166,9 +167,9 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::wyre::proto::DataChunk)},
-  { 10, -1, sizeof(::wyre::proto::Error)},
-  { 17, -1, sizeof(::wyre::proto::PushFileResponse)},
-  { 23, -1, sizeof(::wyre::proto::RunCommandResponse)},
+  { 11, -1, sizeof(::wyre::proto::Error)},
+  { 18, -1, sizeof(::wyre::proto::PushFileResponse)},
+  { 24, -1, sizeof(::wyre::proto::RunCommandResponse)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -200,24 +201,24 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\nwyre.proto\022\nwyre.proto\"\242\001\n\tDataChunk\022\023"
+      "\n\nwyre.proto\022\nwyre.proto\"\264\001\n\tDataChunk\022\023"
       "\n\013description\030\001 \001(\t\022,\n\006source\030\002 \001(\0162\034.wy"
       "re.proto.DataChunk.Source\022\014\n\004data\030\003 \001(\014\022"
-      "\021\n\tfinalHash\030\n \001(\014\022\020\n\010fileSize\030\013 \001(\004\"\037\n\006"
-      "Source\022\010\n\004FILE\020\000\022\013\n\007COMMAND\020\001\"m\n\005Error\022$"
-      "\n\004type\030\001 \001(\0162\026.wyre.proto.Error.Type\022\017\n\007"
-      "message\030\002 \001(\t\"-\n\004Type\022\013\n\007UNKNOWN\020\000\022\013\n\007SU"
-      "CCESS\020\001\022\013\n\007FAILURE\020\002\"4\n\020PushFileResponse"
-      "\022 \n\005error\030\001 \001(\0132\021.wyre.proto.Error\"6\n\022Ru"
-      "nCommandResponse\022 \n\005error\030\001 \001(\0132\021.wyre.p"
-      "roto.Error2\227\001\n\013WyreService\022A\n\010PushFile\022\025"
-      ".wyre.proto.DataChunk\032\034.wyre.proto.PushF"
-      "ileResponse(\001\022E\n\nRunCommand\022\025.wyre.proto"
-      ".DataChunk\032\036.wyre.proto.RunCommandRespon"
-      "se(\001b\006proto3"
+      "\020\n\010finished\030\004 \001(\010\022\021\n\tfinalHash\030\n \001(\014\022\020\n\010"
+      "fileSize\030\013 \001(\004\"\037\n\006Source\022\010\n\004FILE\020\000\022\013\n\007CO"
+      "MMAND\020\001\"m\n\005Error\022$\n\004type\030\001 \001(\0162\026.wyre.pr"
+      "oto.Error.Type\022\017\n\007message\030\002 \001(\t\"-\n\004Type\022"
+      "\013\n\007UNKNOWN\020\000\022\013\n\007SUCCESS\020\001\022\013\n\007FAILURE\020\002\"4"
+      "\n\020PushFileResponse\022 \n\005error\030\001 \001(\0132\021.wyre"
+      ".proto.Error\"6\n\022RunCommandResponse\022 \n\005er"
+      "ror\030\001 \001(\0132\021.wyre.proto.Error2\227\001\n\013WyreSer"
+      "vice\022A\n\010PushFile\022\025.wyre.proto.DataChunk\032"
+      "\034.wyre.proto.PushFileResponse(\001\022E\n\nRunCo"
+      "mmand\022\025.wyre.proto.DataChunk\032\036.wyre.prot"
+      "o.RunCommandResponse(\001b\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 572);
+      descriptor, 590);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "wyre.proto", &protobuf_RegisterTypes);
 }
@@ -288,6 +289,7 @@ void DataChunk::InitAsDefaultInstance() {
 const int DataChunk::kDescriptionFieldNumber;
 const int DataChunk::kSourceFieldNumber;
 const int DataChunk::kDataFieldNumber;
+const int DataChunk::kFinishedFieldNumber;
 const int DataChunk::kFinalHashFieldNumber;
 const int DataChunk::kFileSizeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -435,6 +437,20 @@ bool DataChunk::MergePartialFromCodedStream(
         break;
       }
 
+      // bool finished = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(32u /* 32 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &finished_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       // bytes finalHash = 10;
       case 10: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
@@ -509,6 +525,11 @@ void DataChunk::SerializeWithCachedSizes(
       3, this->data(), output);
   }
 
+  // bool finished = 4;
+  if (this->finished() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(4, this->finished(), output);
+  }
+
   // bytes finalHash = 10;
   if (this->finalhash().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
@@ -556,6 +577,11 @@ void DataChunk::SerializeWithCachedSizes(
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         3, this->data(), target);
+  }
+
+  // bool finished = 4;
+  if (this->finished() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(4, this->finished(), target);
   }
 
   // bytes finalHash = 10;
@@ -614,6 +640,11 @@ size_t DataChunk::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->source());
   }
 
+  // bool finished = 4;
+  if (this->finished() != 0) {
+    total_size += 1 + 1;
+  }
+
   // uint64 fileSize = 11;
   if (this->filesize() != 0) {
     total_size += 1 +
@@ -665,6 +696,9 @@ void DataChunk::MergeFrom(const DataChunk& from) {
   if (from.source() != 0) {
     set_source(from.source());
   }
+  if (from.finished() != 0) {
+    set_finished(from.finished());
+  }
   if (from.filesize() != 0) {
     set_filesize(from.filesize());
   }
@@ -698,6 +732,7 @@ void DataChunk::InternalSwap(DataChunk* other) {
   data_.Swap(&other->data_);
   finalhash_.Swap(&other->finalhash_);
   swap(source_, other->source_);
+  swap(finished_, other->finished_);
   swap(filesize_, other->filesize_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(_cached_size_, other->_cached_size_);

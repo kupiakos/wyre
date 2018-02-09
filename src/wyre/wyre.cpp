@@ -18,8 +18,12 @@
 #include "network_error.h"
 #include "ChildProcess.h"
 
+#include "wyre.pb.h"
+#include "SHA1.h"
+
 namespace wyre {
 
+constexpr size_t BUF_SIZE = 16384;
 constexpr uint16_t DEFAULT_PORT = 34215;
 
 using SafeSocket = SafeResource<SOCKET, INVALID_SOCKET, _closesocket>;
@@ -38,26 +42,58 @@ std::pair<std::string, uint16_t> parseServerSpec(const std::string & serverSpec)
 	return std::make_pair(serverSpec.substr(0, colon), port);
 }
 
+
 void run(std::vector<std::string>& args) {
+	using wyre::proto::DataChunk;
 	auto server = parseServerSpec(args[0]);
 	args.erase(args.begin());
 
 	WSASession w;
 	wyre::socket sock;
+	std::cout << "Connecting to " << server.first << ", port "
+		<< server.second << std::endl;
 	sock.connect(server.first, server.second);
 
 	ChildProcess p;
 	p.withArgv(args).useStdout().run();
-	auto f = p.stdout_();
-	if (!f) { throw std::runtime_error("stdout not defined"); }
-	constexpr size_t BUF_SIZE = 16384;
-	auto buf = std::make_unique<char[]>(BUF_SIZE);
-	while (!std::feof(f)) {
-		auto written = std::fread(buf.get(), 1, BUF_SIZE, f);
-		if (written >= 0) {
-			sock.write(buf.get(), written);
+	auto processOut = p.stdout_();
+	if (!processOut) { throw std::runtime_error("stdout not defined"); }
+	
+	DataChunk d;
+	d.set_description(p.cmdLine());
+	d.set_source(DataChunk::COMMAND);
+	d.set_finished(false);
+	d.set_data("", 0);
+
+	SHA1 sha;
+	auto data = std::make_unique<char[]>(BUF_SIZE);
+	std::cout << "Running " << p.cmdLine() << std::endl;
+
+	for (size_t nRead = 0;;) {
+		if (!std::feof(processOut)) {
+			nRead = std::fread(data.get(), 1, BUF_SIZE, processOut);
+		}
+		if (std::feof(processOut)) {
+			d.set_finished(true);
+			d.set_finalhash(sha.hexdigest());
+		}
+		if (nRead > 0) {
+			sha.update(data.get(), nRead);
+			d.set_data(data.get(), nRead);
+		} else if (nRead < 0) {
+			throw network_error("Error reading processOut");
+		} else {
+			continue;
+		}
+		auto test = d.SerializeAsString();
+		if (!d.SerializeToOstream(&sock)) {
+			throw network_error("Could not serialize");
+		}
+		if (std::feof(processOut)) {
+			break;
 		}
 	}
+
 	sock.shutdown(SD_SEND);
 	sock.close();
 }
@@ -70,7 +106,7 @@ void push(std::vector<std::string>& args) {
 	sock.connect(server.first, server.second);
 
 	{
-		std::ifstream file(args[1]);
+		std::ifstream file(args[1], std::ios::binary);
 		if (!file.is_open()) {
 			throw std::runtime_error("Could not open file " + args[1]);
 		}

@@ -46,7 +46,7 @@ public:
 
 	template<typename option_type>
 	bool setsockopt(int level, int option, const option_type &value = nullptr) {
-		return ::setsockopt(_sockfd, level, option, &value, sizeof(option_type)) != -1;
+		return ::setsockopt(sockfd(), level, option, (char *)&value, sizeof(option_type)) != -1;
 	}
 };
 

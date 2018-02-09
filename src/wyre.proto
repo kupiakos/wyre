@@ -10,6 +10,7 @@ message DataChunk {
 	}
 	Source source = 2;
 	bytes data = 3; // The actual payload
+	bool finished = 4;
 
 	bytes finalHash = 10; // 20-byte SHA-1 Sum
 	uint64 fileSize = 11;
