@@ -227,6 +227,7 @@ void SHA1::update(std::istream &is) {
 */
 
 std::string SHA1::hexdigest() {
+	// TODO: Make this not reset the whole thing
 	/* Total number of hashed bits */
 	uint64_t total_bits = (_transforms*BLOCK_BYTES + _buffer.size()) * 8;
 
