@@ -1,5 +1,6 @@
 
 #include "wincmdline.h"
+#include <array>
 
 namespace wyre {
 namespace win32 {
@@ -67,6 +68,68 @@ std::wstring escapeCmd(const std::wstring & text, bool onlyQuotes) {
 			result.push_back(text[next]);
 			pos = next + 1;
 		}
+	}
+	return result;
+}
+
+constexpr std::array<const wchar_t *, 22> forbiddenNames{
+	L"CON", L"PRN", L"AUX", L"NUL",
+	L"COM1", L"COM2", L"COM3", L"COM4",
+	L"COM5", L"COM6", L"COM7", L"COM8", L"COM9",
+	L"LPT1", L"LPT2", L"LPT3", L"LPT4",
+	L"LPT5", L"LPT6", L"LPT7", L"LPT8", L"LPT9"
+};
+
+// reserved characters outside of \x00
+constexpr std::array<const wchar_t, 9> reservedChars{
+	L'<', L'>', L':', L'"', L'/', L'\\', L'|', L'?', L'*'
+};
+
+template <typename ValueType, typename Container>
+constexpr bool in(const ValueType & value, const Container & c) {
+	return std::find(c.cbegin(), c.cend(), value) != c.cend();
+}
+
+template <typename CharT> constexpr const CharT * hexDigits() {
+	static_assert(false, "Invalid character type");
+}
+template <> constexpr const char * hexDigits() {
+	return "0123456789ABCDEF";
+}
+template <> constexpr const wchar_t * hexDigits() {
+	return L"0123456789ABCDEF";
+}
+
+// Adapted from https://stackoverflow.com/a/33447587
+template <typename CharT, typename I>
+constexpr std::basic_string<CharT> n2hexstr(I w, size_t hex_len = sizeof(I) << 1) {
+	static const CharT * digits = hexDigits<CharT>();
+	std::basic_string<CharT> rc(hex_len, digits[0]);
+	for (size_t i = 0, j = (hex_len - 1) * 4; i<hex_len; ++i, j -= 4)
+		rc[i] = digits[(w >> j) & 0x0f];
+	return rc;
+}
+
+std::wstring escapeFile(const std::wstring & name) {
+	if (name.empty()) { return L""; }
+	std::wstring result;
+
+	if (in(name.substr(0, name.find(L'.', 0)), forbiddenNames)) {
+		result.push_back(L'#');
+	}
+
+	for (auto c : name) {
+		if (c >= 0 && c <= 31 || in(c, reservedChars)) {
+			// url-style escape
+			result.push_back(L'%');
+			result.append(n2hexstr<wchar_t>(c, 2));
+		} else {
+			result.push_back(c);
+		}
+	}
+	wchar_t last = *result.crbegin();
+	if (last == L' ' || last == L'.') {
+		result.push_back('#');
 	}
 	return result;
 }

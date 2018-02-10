@@ -17,6 +17,7 @@
 #include "socket.h"
 #include "network_error.h"
 #include "ChildProcess.h"
+#include "proto_util.h"
 
 #include "wyre.pb.h"
 #include "SHA1.h"
@@ -69,30 +70,27 @@ void run(std::vector<std::string>& args) {
 	auto data = std::make_unique<char[]>(BUF_SIZE);
 	std::cout << "Running " << p.cmdLine() << std::endl;
 
-	for (size_t nRead = 0;;) {
+	do {
+		size_t nRead = 0;
 		if (!std::feof(processOut)) {
 			nRead = std::fread(data.get(), 1, BUF_SIZE, processOut);
-		}
-		if (std::feof(processOut)) {
-			d.set_finished(true);
-			d.set_finalhash(sha.hexdigest());
 		}
 		if (nRead > 0) {
 			sha.update(data.get(), nRead);
 			d.set_data(data.get(), nRead);
 		} else if (nRead < 0) {
-			throw network_error("Error reading processOut");
+			throw std::runtime_error("Error reading processOut");
 		} else {
 			continue;
 		}
-		auto test = d.SerializeAsString();
-		if (!d.SerializeToOstream(&sock)) {
-			throw network_error("Could not serialize");
-		}
 		if (std::feof(processOut)) {
-			break;
+			d.set_finished(true);
+			d.set_finalhash(sha.hexdigest());
 		}
-	}
+		if (!wyre::proto::writeLengthDelimited(sock, d)) {
+			throw std::runtime_error("Could not serialize");
+		}
+	} while (!std::feof(processOut));
 
 	sock.shutdown(SD_SEND);
 	sock.close();

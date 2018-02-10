@@ -56,6 +56,9 @@
     <ClInclude Include="SHA1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="proto_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wyre\wyre.cpp">

@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="network_error.h" />
+    <ClInclude Include="proto_util.h" />
     <ClInclude Include="SafeResource.h" />
     <ClInclude Include="SHA1.h" />
     <ClInclude Include="socket.h" />

@@ -156,11 +156,13 @@
   <ItemGroup>
     <ClInclude Include="ConsumerThreadPool.h" />
     <ClInclude Include="network_error.h" />
+    <ClInclude Include="proto_util.h" />
     <ClInclude Include="SafeResource.h" />
     <ClInclude Include="SHA1.h" />
     <ClInclude Include="socket.h" />
     <ClInclude Include="socketbuf.h" />
     <ClInclude Include="socket_descriptor.h" />
+    <ClInclude Include="time_util.h" />
     <ClInclude Include="wincmdline.h" />
     <ClInclude Include="winunicode.h" />
     <ClInclude Include="wsasession.h" />

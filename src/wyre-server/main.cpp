@@ -4,9 +4,6 @@
 #include <fstream>
 #include <atomic>
 #include <filesystem>
-#include <ctime>
-#include <sstream>
-#include <locale>
 
 #include "socket.h"
 #include "SHA1.h"
@@ -16,6 +13,9 @@
 #include "ConsumerThreadPool.h"
 #include "network_error.h"
 #include "wsasession.h"
+#include "time_util.h"
+#include "wincmdline.h"
+#include "proto_util.h"
 
 #pragma warning (disable : 4146)
 
@@ -76,29 +76,6 @@ std::pair<std::string, uint16_t> parseServerSpec(const std::string & serverSpec)
 	return std::make_pair(serverSpec.substr(0, colon), port);
 }
 
-
-std::ostream& formatDateTime(std::ostream& out, const tm& t, const char* fmt) {
-	const auto& dateWriter = std::use_facet<std::time_put<char>>(out.getloc());
-	int n = std::strlen(fmt);
-	if (dateWriter.put(out, out, ' ', &t, fmt, fmt + n).failed()) {
-		throw std::runtime_error("failure to format date time");
-	}
-	return out;
-}
-
-std::string dateTimeToString(const tm& t, const char* format) {
-	std::ostringstream s;
-	formatDateTime(s, t, format);
-	return s.str();
-}
-
-tm now() {
-	time_t now = time(0);
-	tm result;
-	localtime_s(&result, &now);
-	return result;
-}
-
 namespace fs = std::experimental::filesystem::v1;
 
 int wyre_main(std::vector<std::string> argv) {
@@ -124,9 +101,10 @@ int wyre_main(std::vector<std::string> argv) {
 		sock.bind(spec.first, spec.second);
 		sock.listen();
 
-		std::mutex mut;
+		std::mutex reportMut;
 		std::ofstream reportFile("report.md", std::ios::app);
-		const fs::path destDir = fs::current_path() / "out";
+		std::ofstream shaFile("hashes.sha1.txt", std::ios::app);
+		const fs::path destDir = "out";
 		if (!fs::is_directory(destDir)) {
 			fs::create_directory(destDir);
 		}
@@ -135,37 +113,55 @@ int wyre_main(std::vector<std::string> argv) {
 			wyre::socket sock(std::move(r.socket()));
 			using wyre::proto::DataChunk;
 			DataChunk chunk;
-			if (!chunk.ParseFromIstream(&sock)) {
-				std::cerr << "Could not parse data chunk" << std::endl;
-				return;
+			if (!wyre::proto::readLengthDelimited(sock, chunk)) {
+				throw std::runtime_error("Could not parse data chunk");
 			}
+			// Verify fields
+			const auto & description = chunk.description();
+			if (description.empty()) {
+				throw std::runtime_error("Chunk description empty");
+			}
+
+			// Figure out where to save it
 			fs::path dest;
-			if (chunk.source() == DataChunk::FILE) {
-				dest = destDir /
-					(chunk.description().substr(0, chunk.description().find(' ')) + ".0");
-			} else {
-				dest = destDir /
-					(chunk.description().substr(chunk.description().find_last_of("/\\", 0)) + ".0");
+			switch (chunk.source()) {
+			case DataChunk::FILE: {
+				auto slash = description.find_last_of("/\\");
+				if (slash == std::string::npos) {
+					slash = 0;
+				}
+				dest = destDir / (description.substr(slash));
+				break;
 			}
-			int i = 1;
-			while (fs::exists(dest)) {
-				dest.replace_extension(std::to_string(i++));
+			case DataChunk::COMMAND:
+				dest = destDir / wyre::win32::escapeFile(
+					wyre::unicode::utf8ToUtf16(description));
+				break;
+			default:
+				throw std::runtime_error("Unrecognized chunk source");
 			}
+
+			for (int i = 1; fs::exists(dest); ++i) {
+				// technically a race condition
+				dest.replace_extension(std::to_string(i));
+			}
+			std::cout << "[" << r.address() << "] " << description
+				<< " -> " << dest << std::endl;
 			{
-				std::unique_lock<std::mutex> lock(mut);
-				std::cout << chunk.description() << std::endl;
-				reportFile << dateTimeToString(now(), "##### %Y-%m-%d %H:%M:%S") << '\n';
+				std::unique_lock<std::mutex> lock(reportMut);
+				reportFile << wyre::dateTimeToString(
+					wyre::now(), "###### %F %T %z%n");
 				if (chunk.source() == DataChunk::FILE) {
 					reportFile
-						<< "Saved file '" << chunk.description() << "'\n\n"
+						<< "Saved file '" << description << "'\n\n"
 						<< "Impact: filesystem, cache\n\n";
 				} else {
 					reportFile
-						<< "Ran command '" << chunk.description() << "'\n\n"
+						<< "Ran command '" << description << "'\n\n"
 						<< "Impact: new process, TODO\n\n";
 				}
 				reportFile
-					<< "Saved at " << dest << '\n'
+					<< "Saved at " << dest << ".\n"
 					<< std::endl;
 			}
 			SHA1 sha;
@@ -174,18 +170,27 @@ int wyre_main(std::vector<std::string> argv) {
 				do {
 					destFile << chunk.data();
 					sha.update(chunk.data());
-					if (!chunk.ParseFromIstream(&sock)) {
-						std::cerr << "Could not parse data chunk" << std::endl;
+					if (!sock.eof() && !wyre::proto::readLengthDelimited(sock, chunk)) {
+						throw std::runtime_error("Could not parse data chunk");
 					}
-				} while (!chunk.finished());
+				} while (!chunk.finished() && !sock.eof());
 			}
-			std::cout << dest << ": " << sha.hexdigest() << std::endl;
+			auto digest = sha.hexdigest();
+			if (!chunk.finalhash().empty()) {
+				if (chunk.finalhash() != digest) {
+					throw std::runtime_error("Checksum failure!");
+				}
+			}
+			{
+				std::unique_lock<std::mutex> lock(reportMut);
+				shaFile << digest << "  " << dest.generic_u8string() << std::endl;
+			}
 		});
 
+		std::cout << "Listening on " << spec.first << ":" <<
+			spec.second << std::endl;
 		while (true) {
 			auto response = sock.accept();
-			std::cout << "Connection from " << response.address()
-				<< ":" << response.port() << std::endl;
 			threadPool.push(std::move(response));
 		}
 	}
