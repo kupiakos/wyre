@@ -13,7 +13,7 @@ namespace wyre {
 class WyreClient {
 private:
 	wyre::socket _sock;
-	void sendFile(proto::DataChunk & d, FILE *f);
+	void sendFile(proto::DataChunk & d, FILE *f, FILE *fcopy=nullptr);
 
 public:
 	void connect(const std::string & hostname, uint16_t port);

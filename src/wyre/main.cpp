@@ -19,10 +19,10 @@ int wyre_main(std::vector<std::string> argv);
 
 void printUsage() {
 	fprintf(stderr, "%s",
-		"wyre <command>\n\n"
+		"wyre server[:port] <command>\n\n"
 		"Common commands:\n\n"
-		"  run server args...  - run a command and upload\n"
-		"  push server file    - upload a file to the server\n"
+		"  run args...  - run a command and upload\n"
+		"  push file    - upload a file to the server\n"
 		);
 }
 

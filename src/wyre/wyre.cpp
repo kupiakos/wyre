@@ -48,7 +48,7 @@ inline FILE * utf8Open(const char * filename, const char * mode) {
 #endif
 }
 
-void WyreClient::sendFile(DataChunk & d, FILE *f) {
+void WyreClient::sendFile(DataChunk & d, FILE *f, FILE *fcopy) {
 	if (!f) { return; }
 
 	SHA1 sha;
@@ -64,6 +64,9 @@ void WyreClient::sendFile(DataChunk & d, FILE *f) {
 		if (nRead > 0) {
 			sha.update(data.get(), nRead);
 			d.set_data(data.get(), nRead);
+			if (fcopy) {
+				std::fwrite(data.get(), 1, nRead, fcopy);
+			}
 		} else if (nRead < 0) {
 			throw std::runtime_error("Error reading");
 		} else {
@@ -80,7 +83,7 @@ void WyreClient::sendFile(DataChunk & d, FILE *f) {
 }
 
 void WyreClient::connect(const std::string & hostname, uint16_t port) {
-	std::cout << "Connecting to " << hostname << ", port "
+	std::cerr << "Connecting to " << hostname << ", port "
 		<< port << std::endl;
 	_sock.connect(hostname, port);
 }
@@ -95,8 +98,8 @@ void WyreClient::run(std::vector<std::string>& args) {
 	d.set_description(p.cmdLine());
 	d.set_source(DataChunk::COMMAND);
 
-	std::cout << "Running " << p.cmdLine() << std::endl;
-	sendFile(d, processOut);
+	std::cerr << "Running " << p.cmdLine() << std::endl;
+	sendFile(d, processOut, stdout);
 
 	_sock.shutdown(SD_SEND);
 	_sock.close();

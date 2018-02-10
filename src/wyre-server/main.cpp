@@ -89,7 +89,7 @@ int wyre_main(std::vector<std::string> argv) {
 
 		std::mutex reportMut;
 		std::ofstream reportFile("report.md", std::ios::app);
-		std::ofstream shaFile("hashes.sha1.txt", std::ios::app);
+		std::ofstream shaFile("hashes.sha1.txt", std::ios::app | std::ios::binary);
 		const fs::path destDir = "out";
 		if (!fs::is_directory(destDir)) {
 			fs::create_directory(destDir);
@@ -116,12 +116,12 @@ int wyre_main(std::vector<std::string> argv) {
 				if (slash == std::string::npos) {
 					slash = 0;
 				}
-				dest = destDir / (description.substr(slash));
+				dest = destDir / (description.substr(slash) + ".0");
 				break;
 			}
 			case DataChunk::COMMAND:
 				dest = destDir / wyre::win32::escapeFile(
-					wyre::unicode::utf8ToUtf16(description));
+					wyre::unicode::utf8ToUtf16(description + ".0"));
 				break;
 			default:
 				throw std::runtime_error("Unrecognized chunk source");
