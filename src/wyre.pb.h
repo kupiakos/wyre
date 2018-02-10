@@ -37,7 +37,7 @@ namespace protobuf_wyre_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[4];
+  static const ::google::protobuf::internal::ParseTable schema[1];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -45,17 +45,8 @@ struct TableStruct {
 void AddDescriptors();
 void InitDefaultsDataChunkImpl();
 void InitDefaultsDataChunk();
-void InitDefaultsErrorImpl();
-void InitDefaultsError();
-void InitDefaultsPushFileResponseImpl();
-void InitDefaultsPushFileResponse();
-void InitDefaultsRunCommandResponseImpl();
-void InitDefaultsRunCommandResponse();
 inline void InitDefaults() {
   InitDefaultsDataChunk();
-  InitDefaultsError();
-  InitDefaultsPushFileResponse();
-  InitDefaultsRunCommandResponse();
 }
 }  // namespace protobuf_wyre_2eproto
 namespace wyre {
@@ -63,28 +54,20 @@ namespace proto {
 class DataChunk;
 class DataChunkDefaultTypeInternal;
 extern DataChunkDefaultTypeInternal _DataChunk_default_instance_;
-class Error;
-class ErrorDefaultTypeInternal;
-extern ErrorDefaultTypeInternal _Error_default_instance_;
-class PushFileResponse;
-class PushFileResponseDefaultTypeInternal;
-extern PushFileResponseDefaultTypeInternal _PushFileResponse_default_instance_;
-class RunCommandResponse;
-class RunCommandResponseDefaultTypeInternal;
-extern RunCommandResponseDefaultTypeInternal _RunCommandResponse_default_instance_;
 }  // namespace proto
 }  // namespace wyre
 namespace wyre {
 namespace proto {
 
 enum DataChunk_Source {
-  DataChunk_Source_FILE = 0,
-  DataChunk_Source_COMMAND = 1,
+  DataChunk_Source_UNKNOWN = 0,
+  DataChunk_Source_FILE = 1,
+  DataChunk_Source_COMMAND = 2,
   DataChunk_Source_DataChunk_Source_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   DataChunk_Source_DataChunk_Source_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool DataChunk_Source_IsValid(int value);
-const DataChunk_Source DataChunk_Source_Source_MIN = DataChunk_Source_FILE;
+const DataChunk_Source DataChunk_Source_Source_MIN = DataChunk_Source_UNKNOWN;
 const DataChunk_Source DataChunk_Source_Source_MAX = DataChunk_Source_COMMAND;
 const int DataChunk_Source_Source_ARRAYSIZE = DataChunk_Source_Source_MAX + 1;
 
@@ -97,28 +80,6 @@ inline bool DataChunk_Source_Parse(
     const ::std::string& name, DataChunk_Source* value) {
   return ::google::protobuf::internal::ParseNamedEnum<DataChunk_Source>(
     DataChunk_Source_descriptor(), name, value);
-}
-enum Error_Type {
-  Error_Type_UNKNOWN = 0,
-  Error_Type_SUCCESS = 1,
-  Error_Type_FAILURE = 2,
-  Error_Type_Error_Type_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
-  Error_Type_Error_Type_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
-};
-bool Error_Type_IsValid(int value);
-const Error_Type Error_Type_Type_MIN = Error_Type_UNKNOWN;
-const Error_Type Error_Type_Type_MAX = Error_Type_FAILURE;
-const int Error_Type_Type_ARRAYSIZE = Error_Type_Type_MAX + 1;
-
-const ::google::protobuf::EnumDescriptor* Error_Type_descriptor();
-inline const ::std::string& Error_Type_Name(Error_Type value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    Error_Type_descriptor(), value);
-}
-inline bool Error_Type_Parse(
-    const ::std::string& name, Error_Type* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<Error_Type>(
-    Error_Type_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -203,6 +164,8 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   // nested types ----------------------------------------------------
 
   typedef DataChunk_Source Source;
+  static const Source UNKNOWN =
+    DataChunk_Source_UNKNOWN;
   static const Source FILE =
     DataChunk_Source_FILE;
   static const Source COMMAND =
@@ -303,352 +266,6 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   mutable int _cached_size_;
   friend struct ::protobuf_wyre_2eproto::TableStruct;
   friend void ::protobuf_wyre_2eproto::InitDefaultsDataChunkImpl();
-};
-// -------------------------------------------------------------------
-
-class Error : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:wyre.proto.Error) */ {
- public:
-  Error();
-  virtual ~Error();
-
-  Error(const Error& from);
-
-  inline Error& operator=(const Error& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  Error(Error&& from) noexcept
-    : Error() {
-    *this = ::std::move(from);
-  }
-
-  inline Error& operator=(Error&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Error& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Error* internal_default_instance() {
-    return reinterpret_cast<const Error*>(
-               &_Error_default_instance_);
-  }
-  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    1;
-
-  void Swap(Error* other);
-  friend void swap(Error& a, Error& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline Error* New() const PROTOBUF_FINAL { return New(NULL); }
-
-  Error* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void CopyFrom(const Error& from);
-  void MergeFrom(const Error& from);
-  void Clear() PROTOBUF_FINAL;
-  bool IsInitialized() const PROTOBUF_FINAL;
-
-  size_t ByteSizeLong() const PROTOBUF_FINAL;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
-  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
-  void InternalSwap(Error* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
-
-  // nested types ----------------------------------------------------
-
-  typedef Error_Type Type;
-  static const Type UNKNOWN =
-    Error_Type_UNKNOWN;
-  static const Type SUCCESS =
-    Error_Type_SUCCESS;
-  static const Type FAILURE =
-    Error_Type_FAILURE;
-  static inline bool Type_IsValid(int value) {
-    return Error_Type_IsValid(value);
-  }
-  static const Type Type_MIN =
-    Error_Type_Type_MIN;
-  static const Type Type_MAX =
-    Error_Type_Type_MAX;
-  static const int Type_ARRAYSIZE =
-    Error_Type_Type_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  Type_descriptor() {
-    return Error_Type_descriptor();
-  }
-  static inline const ::std::string& Type_Name(Type value) {
-    return Error_Type_Name(value);
-  }
-  static inline bool Type_Parse(const ::std::string& name,
-      Type* value) {
-    return Error_Type_Parse(name, value);
-  }
-
-  // accessors -------------------------------------------------------
-
-  // string message = 2;
-  void clear_message();
-  static const int kMessageFieldNumber = 2;
-  const ::std::string& message() const;
-  void set_message(const ::std::string& value);
-  #if LANG_CXX11
-  void set_message(::std::string&& value);
-  #endif
-  void set_message(const char* value);
-  void set_message(const char* value, size_t size);
-  ::std::string* mutable_message();
-  ::std::string* release_message();
-  void set_allocated_message(::std::string* message);
-
-  // .wyre.proto.Error.Type type = 1;
-  void clear_type();
-  static const int kTypeFieldNumber = 1;
-  ::wyre::proto::Error_Type type() const;
-  void set_type(::wyre::proto::Error_Type value);
-
-  // @@protoc_insertion_point(class_scope:wyre.proto.Error)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr message_;
-  int type_;
-  mutable int _cached_size_;
-  friend struct ::protobuf_wyre_2eproto::TableStruct;
-  friend void ::protobuf_wyre_2eproto::InitDefaultsErrorImpl();
-};
-// -------------------------------------------------------------------
-
-class PushFileResponse : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:wyre.proto.PushFileResponse) */ {
- public:
-  PushFileResponse();
-  virtual ~PushFileResponse();
-
-  PushFileResponse(const PushFileResponse& from);
-
-  inline PushFileResponse& operator=(const PushFileResponse& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  PushFileResponse(PushFileResponse&& from) noexcept
-    : PushFileResponse() {
-    *this = ::std::move(from);
-  }
-
-  inline PushFileResponse& operator=(PushFileResponse&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const PushFileResponse& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const PushFileResponse* internal_default_instance() {
-    return reinterpret_cast<const PushFileResponse*>(
-               &_PushFileResponse_default_instance_);
-  }
-  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    2;
-
-  void Swap(PushFileResponse* other);
-  friend void swap(PushFileResponse& a, PushFileResponse& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline PushFileResponse* New() const PROTOBUF_FINAL { return New(NULL); }
-
-  PushFileResponse* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void CopyFrom(const PushFileResponse& from);
-  void MergeFrom(const PushFileResponse& from);
-  void Clear() PROTOBUF_FINAL;
-  bool IsInitialized() const PROTOBUF_FINAL;
-
-  size_t ByteSizeLong() const PROTOBUF_FINAL;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
-  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
-  void InternalSwap(PushFileResponse* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // .wyre.proto.Error error = 1;
-  bool has_error() const;
-  void clear_error();
-  static const int kErrorFieldNumber = 1;
-  const ::wyre::proto::Error& error() const;
-  ::wyre::proto::Error* release_error();
-  ::wyre::proto::Error* mutable_error();
-  void set_allocated_error(::wyre::proto::Error* error);
-
-  // @@protoc_insertion_point(class_scope:wyre.proto.PushFileResponse)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::wyre::proto::Error* error_;
-  mutable int _cached_size_;
-  friend struct ::protobuf_wyre_2eproto::TableStruct;
-  friend void ::protobuf_wyre_2eproto::InitDefaultsPushFileResponseImpl();
-};
-// -------------------------------------------------------------------
-
-class RunCommandResponse : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:wyre.proto.RunCommandResponse) */ {
- public:
-  RunCommandResponse();
-  virtual ~RunCommandResponse();
-
-  RunCommandResponse(const RunCommandResponse& from);
-
-  inline RunCommandResponse& operator=(const RunCommandResponse& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  #if LANG_CXX11
-  RunCommandResponse(RunCommandResponse&& from) noexcept
-    : RunCommandResponse() {
-    *this = ::std::move(from);
-  }
-
-  inline RunCommandResponse& operator=(RunCommandResponse&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-  #endif
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const RunCommandResponse& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const RunCommandResponse* internal_default_instance() {
-    return reinterpret_cast<const RunCommandResponse*>(
-               &_RunCommandResponse_default_instance_);
-  }
-  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    3;
-
-  void Swap(RunCommandResponse* other);
-  friend void swap(RunCommandResponse& a, RunCommandResponse& b) {
-    a.Swap(&b);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline RunCommandResponse* New() const PROTOBUF_FINAL { return New(NULL); }
-
-  RunCommandResponse* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void CopyFrom(const RunCommandResponse& from);
-  void MergeFrom(const RunCommandResponse& from);
-  void Clear() PROTOBUF_FINAL;
-  bool IsInitialized() const PROTOBUF_FINAL;
-
-  size_t ByteSizeLong() const PROTOBUF_FINAL;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
-  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
-  void InternalSwap(RunCommandResponse* other);
-  private:
-  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return NULL;
-  }
-  inline void* MaybeArenaPtr() const {
-    return NULL;
-  }
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // .wyre.proto.Error error = 1;
-  bool has_error() const;
-  void clear_error();
-  static const int kErrorFieldNumber = 1;
-  const ::wyre::proto::Error& error() const;
-  ::wyre::proto::Error* release_error();
-  ::wyre::proto::Error* mutable_error();
-  void set_allocated_error(::wyre::proto::Error* error);
-
-  // @@protoc_insertion_point(class_scope:wyre.proto.RunCommandResponse)
- private:
-
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::wyre::proto::Error* error_;
-  mutable int _cached_size_;
-  friend struct ::protobuf_wyre_2eproto::TableStruct;
-  friend void ::protobuf_wyre_2eproto::InitDefaultsRunCommandResponseImpl();
 };
 // ===================================================================
 
@@ -862,194 +479,9 @@ inline void DataChunk::set_filesize(::google::protobuf::uint64 value) {
   // @@protoc_insertion_point(field_set:wyre.proto.DataChunk.fileSize)
 }
 
-// -------------------------------------------------------------------
-
-// Error
-
-// .wyre.proto.Error.Type type = 1;
-inline void Error::clear_type() {
-  type_ = 0;
-}
-inline ::wyre::proto::Error_Type Error::type() const {
-  // @@protoc_insertion_point(field_get:wyre.proto.Error.type)
-  return static_cast< ::wyre::proto::Error_Type >(type_);
-}
-inline void Error::set_type(::wyre::proto::Error_Type value) {
-  
-  type_ = value;
-  // @@protoc_insertion_point(field_set:wyre.proto.Error.type)
-}
-
-// string message = 2;
-inline void Error::clear_message() {
-  message_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Error::message() const {
-  // @@protoc_insertion_point(field_get:wyre.proto.Error.message)
-  return message_.GetNoArena();
-}
-inline void Error::set_message(const ::std::string& value) {
-  
-  message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:wyre.proto.Error.message)
-}
-#if LANG_CXX11
-inline void Error::set_message(::std::string&& value) {
-  
-  message_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:wyre.proto.Error.message)
-}
-#endif
-inline void Error::set_message(const char* value) {
-  GOOGLE_DCHECK(value != NULL);
-  
-  message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:wyre.proto.Error.message)
-}
-inline void Error::set_message(const char* value, size_t size) {
-  
-  message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:wyre.proto.Error.message)
-}
-inline ::std::string* Error::mutable_message() {
-  
-  // @@protoc_insertion_point(field_mutable:wyre.proto.Error.message)
-  return message_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Error::release_message() {
-  // @@protoc_insertion_point(field_release:wyre.proto.Error.message)
-  
-  return message_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Error::set_allocated_message(::std::string* message) {
-  if (message != NULL) {
-    
-  } else {
-    
-  }
-  message_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), message);
-  // @@protoc_insertion_point(field_set_allocated:wyre.proto.Error.message)
-}
-
-// -------------------------------------------------------------------
-
-// PushFileResponse
-
-// .wyre.proto.Error error = 1;
-inline bool PushFileResponse::has_error() const {
-  return this != internal_default_instance() && error_ != NULL;
-}
-inline void PushFileResponse::clear_error() {
-  if (GetArenaNoVirtual() == NULL && error_ != NULL) {
-    delete error_;
-  }
-  error_ = NULL;
-}
-inline const ::wyre::proto::Error& PushFileResponse::error() const {
-  const ::wyre::proto::Error* p = error_;
-  // @@protoc_insertion_point(field_get:wyre.proto.PushFileResponse.error)
-  return p != NULL ? *p : *reinterpret_cast<const ::wyre::proto::Error*>(
-      &::wyre::proto::_Error_default_instance_);
-}
-inline ::wyre::proto::Error* PushFileResponse::release_error() {
-  // @@protoc_insertion_point(field_release:wyre.proto.PushFileResponse.error)
-  
-  ::wyre::proto::Error* temp = error_;
-  error_ = NULL;
-  return temp;
-}
-inline ::wyre::proto::Error* PushFileResponse::mutable_error() {
-  
-  if (error_ == NULL) {
-    error_ = new ::wyre::proto::Error;
-  }
-  // @@protoc_insertion_point(field_mutable:wyre.proto.PushFileResponse.error)
-  return error_;
-}
-inline void PushFileResponse::set_allocated_error(::wyre::proto::Error* error) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete error_;
-  }
-  if (error) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      error = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, error, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  error_ = error;
-  // @@protoc_insertion_point(field_set_allocated:wyre.proto.PushFileResponse.error)
-}
-
-// -------------------------------------------------------------------
-
-// RunCommandResponse
-
-// .wyre.proto.Error error = 1;
-inline bool RunCommandResponse::has_error() const {
-  return this != internal_default_instance() && error_ != NULL;
-}
-inline void RunCommandResponse::clear_error() {
-  if (GetArenaNoVirtual() == NULL && error_ != NULL) {
-    delete error_;
-  }
-  error_ = NULL;
-}
-inline const ::wyre::proto::Error& RunCommandResponse::error() const {
-  const ::wyre::proto::Error* p = error_;
-  // @@protoc_insertion_point(field_get:wyre.proto.RunCommandResponse.error)
-  return p != NULL ? *p : *reinterpret_cast<const ::wyre::proto::Error*>(
-      &::wyre::proto::_Error_default_instance_);
-}
-inline ::wyre::proto::Error* RunCommandResponse::release_error() {
-  // @@protoc_insertion_point(field_release:wyre.proto.RunCommandResponse.error)
-  
-  ::wyre::proto::Error* temp = error_;
-  error_ = NULL;
-  return temp;
-}
-inline ::wyre::proto::Error* RunCommandResponse::mutable_error() {
-  
-  if (error_ == NULL) {
-    error_ = new ::wyre::proto::Error;
-  }
-  // @@protoc_insertion_point(field_mutable:wyre.proto.RunCommandResponse.error)
-  return error_;
-}
-inline void RunCommandResponse::set_allocated_error(::wyre::proto::Error* error) {
-  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == NULL) {
-    delete error_;
-  }
-  if (error) {
-    ::google::protobuf::Arena* submessage_arena = NULL;
-    if (message_arena != submessage_arena) {
-      error = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, error, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  error_ = error;
-  // @@protoc_insertion_point(field_set_allocated:wyre.proto.RunCommandResponse.error)
-}
-
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -1063,11 +495,6 @@ template <> struct is_proto_enum< ::wyre::proto::DataChunk_Source> : ::google::p
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::wyre::proto::DataChunk_Source>() {
   return ::wyre::proto::DataChunk_Source_descriptor();
-}
-template <> struct is_proto_enum< ::wyre::proto::Error_Type> : ::google::protobuf::internal::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::wyre::proto::Error_Type>() {
-  return ::wyre::proto::Error_Type_descriptor();
 }
 
 }  // namespace protobuf
