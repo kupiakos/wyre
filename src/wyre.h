@@ -5,10 +5,24 @@
 #include <vector>
 #include <string>
 
+#include "socket.h"
+#include "wyre.pb.h"
+
 namespace wyre {
 
-void run(std::vector<std::string> &args);
-void push(std::vector<std::string> &args);
+class WyreClient {
+private:
+	wyre::socket _sock;
+	void sendFile(proto::DataChunk & d, FILE *f);
+
+public:
+	void connect(const std::string & hostname, uint16_t port);
+
+	void run(std::vector<std::string> &args);
+	void push(std::vector<std::string> &args);
+
+	wyre::socket & sock() { return _sock; }
+};
 
 } // namespace wyre
 

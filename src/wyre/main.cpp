@@ -3,10 +3,13 @@
 #include <string>
 #include <fstream>
 
+#include "socket.h"
 #include "SHA1.h"
 #include "ChildProcess.h"
 #include "SafeResource.h"
 #include "wyre.h"
+#include "wsasession.h"
+#include "network_util.h"
 
 #pragma warning (disable : 4146)
 
@@ -18,8 +21,8 @@ void printUsage() {
 	fprintf(stderr, "%s",
 		"wyre <command>\n\n"
 		"Common commands:\n\n"
-		"  run server args [args]* - run a command and upload\n"
-		"  push server file        - upload a file to the server\n"
+		"  run server args...  - run a command and upload\n"
+		"  push server file    - upload a file to the server\n"
 		);
 }
 
@@ -59,30 +62,35 @@ int wyre_main(std::vector<std::string> argv) {
 	// TODO: Refactor heavily
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-	if (argv.size() <= 2 ||
+	if (argv.size() <= 3 ||
 			argv[1] == "-h" ||
 			argv[1] == "--help") {
 		printUsage();
 		return 0;
 	}
-	std::string cmd = std::move(argv[1]);
-	argv.erase(argv.begin(), argv.begin() + 2);
+	auto server = std::move(argv[1]);
+	auto cmd = std::move(argv[2]);
+	argv.erase(argv.begin(), argv.begin() + 3);
 
 	int err = 0;
 
 	try {
+		wyre::WSASession w;
+		wyre::WyreClient client;
+		auto spec = wyre::parseServerSpec(server);
+		client.connect(spec.first, spec.second);
 		if (cmd == "run") {
 			// TODO: move to parent
-			if (argv.size() < 2) {
+			if (argv.size() < 1) {
 				printUsage();
 			} else {
-				wyre::run(argv);
+				client.run(argv);
 			}
 		} else if (cmd == "push") {
-			if (argv.size() != 2) {
+			if (argv.size() != 1) {
 				printUsage();
 			} else {
-				wyre::push(argv);
+				client.push(argv);
 			}
 		} else {
 			printUsage();

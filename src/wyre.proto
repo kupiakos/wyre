@@ -1,5 +1,6 @@
 syntax = "proto3";
 package wyre.proto;
+option optimize_for = LITE_RUNTIME;
 
 message DataChunk {
 	string description = 1;

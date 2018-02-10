@@ -24,12 +24,11 @@
 #include <google/protobuf/arenastring.h>
 #include <google/protobuf/generated_message_table_driven.h>
 #include <google/protobuf/generated_message_util.h>
-#include <google/protobuf/metadata.h>
-#include <google/protobuf/message.h>
+#include <google/protobuf/metadata_lite.h>
+#include <google/protobuf/message_lite.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
-#include <google/protobuf/generated_enum_reflection.h>
-#include <google/protobuf/unknown_field_set.h>
+#include <google/protobuf/generated_enum_util.h>
 // @@protoc_insertion_point(includes)
 
 namespace protobuf_wyre_2eproto {
@@ -42,7 +41,6 @@ struct TableStruct {
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
 };
-void AddDescriptors();
 void InitDefaultsDataChunkImpl();
 void InitDefaultsDataChunk();
 inline void InitDefaults() {
@@ -71,19 +69,9 @@ const DataChunk_Source DataChunk_Source_Source_MIN = DataChunk_Source_UNKNOWN;
 const DataChunk_Source DataChunk_Source_Source_MAX = DataChunk_Source_COMMAND;
 const int DataChunk_Source_Source_ARRAYSIZE = DataChunk_Source_Source_MAX + 1;
 
-const ::google::protobuf::EnumDescriptor* DataChunk_Source_descriptor();
-inline const ::std::string& DataChunk_Source_Name(DataChunk_Source value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    DataChunk_Source_descriptor(), value);
-}
-inline bool DataChunk_Source_Parse(
-    const ::std::string& name, DataChunk_Source* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<DataChunk_Source>(
-    DataChunk_Source_descriptor(), name, value);
-}
 // ===================================================================
 
-class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:wyre.proto.DataChunk) */ {
+class DataChunk : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:wyre.proto.DataChunk) */ {
  public:
   DataChunk();
   virtual ~DataChunk();
@@ -109,7 +97,6 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
     return *this;
   }
   #endif
-  static const ::google::protobuf::Descriptor* descriptor();
   static const DataChunk& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
@@ -130,8 +117,8 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   inline DataChunk* New() const PROTOBUF_FINAL { return New(NULL); }
 
   DataChunk* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
-  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
-  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
   void CopyFrom(const DataChunk& from);
   void MergeFrom(const DataChunk& from);
   void Clear() PROTOBUF_FINAL;
@@ -142,13 +129,12 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
       ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
   int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
   private:
   void SharedCtor();
   void SharedDtor();
-  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void SetCachedSize(int size) const;
   void InternalSwap(DataChunk* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
@@ -159,7 +145,7 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
 
   // nested types ----------------------------------------------------
 
@@ -179,17 +165,6 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
     DataChunk_Source_Source_MAX;
   static const int Source_ARRAYSIZE =
     DataChunk_Source_Source_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  Source_descriptor() {
-    return DataChunk_Source_descriptor();
-  }
-  static inline const ::std::string& Source_Name(Source value) {
-    return DataChunk_Source_Name(value);
-  }
-  static inline bool Source_Parse(const ::std::string& name,
-      Source* value) {
-    return DataChunk_Source_Parse(name, value);
-  }
 
   // accessors -------------------------------------------------------
 
@@ -256,7 +231,7 @@ class DataChunk : public ::google::protobuf::Message /* @@protoc_insertion_point
   // @@protoc_insertion_point(class_scope:wyre.proto.DataChunk)
  private:
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr description_;
   ::google::protobuf::internal::ArenaStringPtr data_;
   ::google::protobuf::internal::ArenaStringPtr finalhash_;
@@ -492,10 +467,6 @@ namespace google {
 namespace protobuf {
 
 template <> struct is_proto_enum< ::wyre::proto::DataChunk_Source> : ::google::protobuf::internal::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::wyre::proto::DataChunk_Source>() {
-  return ::wyre::proto::DataChunk_Source_descriptor();
-}
 
 }  // namespace protobuf
 }  // namespace google

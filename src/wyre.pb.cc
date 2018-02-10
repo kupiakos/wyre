@@ -10,10 +10,7 @@
 #include <google/protobuf/stubs/once.h>
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/wire_format_lite_inl.h>
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/generated_message_reflection.h>
-#include <google/protobuf/reflection_ops.h>
-#include <google/protobuf/wire_format.h>
+#include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 // This is a temporary google only hack
 #ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
 #include "third_party/protobuf/version.h"
@@ -50,82 +47,9 @@ void InitDefaultsDataChunk() {
   ::google::protobuf::GoogleOnceInit(&once, &InitDefaultsDataChunkImpl);
 }
 
-::google::protobuf::Metadata file_level_metadata[1];
-const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[1];
-
-const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, description_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, source_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, data_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, finished_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, finalhash_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::wyre::proto::DataChunk, filesize_),
-};
-static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::wyre::proto::DataChunk)},
-};
-
-static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::wyre::proto::_DataChunk_default_instance_),
-};
-
-void protobuf_AssignDescriptors() {
-  AddDescriptors();
-  ::google::protobuf::MessageFactory* factory = NULL;
-  AssignDescriptors(
-      "wyre.proto", schemas, file_default_instances, TableStruct::offsets, factory,
-      file_level_metadata, file_level_enum_descriptors, NULL);
-}
-
-void protobuf_AssignDescriptorsOnce() {
-  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &protobuf_AssignDescriptors);
-}
-
-void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
-void protobuf_RegisterTypes(const ::std::string&) {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 1);
-}
-
-void AddDescriptorsImpl() {
-  InitDefaults();
-  static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-      "\n\nwyre.proto\022\nwyre.proto\"\301\001\n\tDataChunk\022\023"
-      "\n\013description\030\001 \001(\t\022,\n\006source\030\002 \001(\0162\034.wy"
-      "re.proto.DataChunk.Source\022\014\n\004data\030\003 \001(\014\022"
-      "\020\n\010finished\030\004 \001(\010\022\021\n\tfinalHash\030\n \001(\014\022\020\n\010"
-      "fileSize\030\013 \001(\004\",\n\006Source\022\013\n\007UNKNOWN\020\000\022\010\n"
-      "\004FILE\020\001\022\013\n\007COMMAND\020\002b\006proto3"
-  };
-  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 228);
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
-    "wyre.proto", &protobuf_RegisterTypes);
-}
-
-void AddDescriptors() {
-  static GOOGLE_PROTOBUF_DECLARE_ONCE(once);
-  ::google::protobuf::GoogleOnceInit(&once, &AddDescriptorsImpl);
-}
-// Force AddDescriptors() to be called at dynamic initialization time.
-struct StaticDescriptorInitializer {
-  StaticDescriptorInitializer() {
-    AddDescriptors();
-  }
-} static_descriptor_initializer;
 }  // namespace protobuf_wyre_2eproto
 namespace wyre {
 namespace proto {
-const ::google::protobuf::EnumDescriptor* DataChunk_Source_descriptor() {
-  protobuf_wyre_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_wyre_2eproto::file_level_enum_descriptors[0];
-}
 bool DataChunk_Source_IsValid(int value) {
   switch (value) {
     case 0:
@@ -160,7 +84,7 @@ const int DataChunk::kFileSizeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 DataChunk::DataChunk()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
   if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
     ::protobuf_wyre_2eproto::InitDefaultsDataChunk();
   }
@@ -168,7 +92,7 @@ DataChunk::DataChunk()
   // @@protoc_insertion_point(constructor:wyre.proto.DataChunk)
 }
 DataChunk::DataChunk(const DataChunk& from)
-  : ::google::protobuf::Message(),
+  : ::google::protobuf::MessageLite(),
       _internal_metadata_(NULL),
       _cached_size_(0) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -216,11 +140,6 @@ void DataChunk::SetCachedSize(int size) const {
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* DataChunk::descriptor() {
-  ::protobuf_wyre_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_wyre_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
 const DataChunk& DataChunk::default_instance() {
   ::protobuf_wyre_2eproto::InitDefaultsDataChunk();
   return *internal_default_instance();
@@ -253,6 +172,12 @@ bool DataChunk::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
+  ::google::protobuf::internal::LiteUnknownFieldSetter unknown_fields_setter(
+      &_internal_metadata_);
+  ::google::protobuf::io::StringOutputStream unknown_fields_output(
+      unknown_fields_setter.buffer());
+  ::google::protobuf::io::CodedOutputStream unknown_fields_stream(
+      &unknown_fields_output, false);
   // @@protoc_insertion_point(parse_start:wyre.proto.DataChunk)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
@@ -347,8 +272,8 @@ bool DataChunk::MergePartialFromCodedStream(
         if (tag == 0) {
           goto success;
         }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(
+            input, tag, &unknown_fields_stream));
         break;
       }
     }
@@ -406,78 +331,17 @@ void DataChunk::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt64(11, this->filesize(), output);
   }
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
-  }
+  output->WriteRaw((::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()).data(),
+                   static_cast<int>((::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()).size()));
   // @@protoc_insertion_point(serialize_end:wyre.proto.DataChunk)
-}
-
-::google::protobuf::uint8* DataChunk::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:wyre.proto.DataChunk)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // string description = 1;
-  if (this->description().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->description().data(), static_cast<int>(this->description().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "wyre.proto.DataChunk.description");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->description(), target);
-  }
-
-  // .wyre.proto.DataChunk.Source source = 2;
-  if (this->source() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      2, this->source(), target);
-  }
-
-  // bytes data = 3;
-  if (this->data().size() > 0) {
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
-        3, this->data(), target);
-  }
-
-  // bool finished = 4;
-  if (this->finished() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(4, this->finished(), target);
-  }
-
-  // bytes finalHash = 10;
-  if (this->finalhash().size() > 0) {
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
-        10, this->finalhash(), target);
-  }
-
-  // uint64 fileSize = 11;
-  if (this->filesize() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(11, this->filesize(), target);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:wyre.proto.DataChunk)
-  return target;
 }
 
 size_t DataChunk::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:wyre.proto.DataChunk)
   size_t total_size = 0;
 
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
-  }
+  total_size += (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()).size();
+
   // string description = 1;
   if (this->description().size() > 0) {
     total_size += 1 +
@@ -524,19 +388,9 @@ size_t DataChunk::ByteSizeLong() const {
   return total_size;
 }
 
-void DataChunk::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:wyre.proto.DataChunk)
-  GOOGLE_DCHECK_NE(&from, this);
-  const DataChunk* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const DataChunk>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:wyre.proto.DataChunk)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:wyre.proto.DataChunk)
-    MergeFrom(*source);
-  }
+void DataChunk::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const DataChunk*>(&from));
 }
 
 void DataChunk::MergeFrom(const DataChunk& from) {
@@ -569,13 +423,6 @@ void DataChunk::MergeFrom(const DataChunk& from) {
   }
 }
 
-void DataChunk::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:wyre.proto.DataChunk)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
 void DataChunk::CopyFrom(const DataChunk& from) {
 // @@protoc_insertion_point(class_specific_copy_from_start:wyre.proto.DataChunk)
   if (&from == this) return;
@@ -603,9 +450,8 @@ void DataChunk::InternalSwap(DataChunk* other) {
   swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata DataChunk::GetMetadata() const {
-  protobuf_wyre_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_wyre_2eproto::file_level_metadata[kIndexInFileMessages];
+::std::string DataChunk::GetTypeName() const {
+  return "wyre.proto.DataChunk";
 }
 
 

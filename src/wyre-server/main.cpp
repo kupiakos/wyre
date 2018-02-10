@@ -16,6 +16,7 @@
 #include "time_util.h"
 #include "wincmdline.h"
 #include "proto_util.h"
+#include "network_util.h"
 
 #pragma warning (disable : 4146)
 
@@ -61,21 +62,6 @@ int main(int argc, char ** argv) {
 }
 #endif
 
-constexpr uint16_t DEFAULT_PORT = 34215;
-std::pair<std::string, uint16_t> parseServerSpec(const std::string & serverSpec) {
-	size_t colon = serverSpec.find(':');
-	if (colon == serverSpec.npos) {
-		return std::make_pair(serverSpec, DEFAULT_PORT);
-	}
-	const char *data = serverSpec.data();
-	char *end;
-	int port = strtol(data + colon + 1, &end, 10);
-	if (port == 0 || *end != '\0') {
-		throw std::runtime_error("Invalid port specification");
-	}
-	return std::make_pair(serverSpec.substr(0, colon), port);
-}
-
 namespace fs = std::experimental::filesystem::v1;
 
 int wyre_main(std::vector<std::string> argv) {
@@ -93,7 +79,7 @@ int wyre_main(std::vector<std::string> argv) {
 	int err = 0;
 
 	try {
-		auto spec = parseServerSpec(argv[0]);
+		auto spec = wyre::parseServerSpec(argv[0]);
 		wyre::WSASession w;
 		wyre::socket sock;
 		
@@ -167,13 +153,16 @@ int wyre_main(std::vector<std::string> argv) {
 			SHA1 sha;
 			{
 				std::ofstream destFile(dest, std::ios::out | std::ios::binary);
-				do {
+				for (;;) {
 					destFile << chunk.data();
 					sha.update(chunk.data());
-					if (!sock.eof() && !wyre::proto::readLengthDelimited(sock, chunk)) {
+					if (sock.eof() || chunk.finished()) {
+						break;
+					}
+					if (!wyre::proto::readLengthDelimited(sock, chunk)) {
 						throw std::runtime_error("Could not parse data chunk");
 					}
-				} while (!chunk.finished() && !sock.eof());
+				}
 			}
 			auto digest = sha.hexdigest();
 			if (!chunk.finalhash().empty()) {
