@@ -28,7 +28,6 @@
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
-#include <google/protobuf/generated_enum_util.h>
 // @@protoc_insertion_point(includes)
 
 namespace protobuf_wyre_2eproto {
@@ -36,15 +35,24 @@ namespace protobuf_wyre_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[1];
+  static const ::google::protobuf::internal::ParseTable schema[4];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
 };
 void InitDefaultsDataChunkImpl();
 void InitDefaultsDataChunk();
+void InitDefaultsWyreCommandImpl();
+void InitDefaultsWyreCommand();
+void InitDefaultsStartServerSessionImpl();
+void InitDefaultsStartServerSession();
+void InitDefaultsResultImpl();
+void InitDefaultsResult();
 inline void InitDefaults() {
   InitDefaultsDataChunk();
+  InitDefaultsWyreCommand();
+  InitDefaultsStartServerSession();
+  InitDefaultsResult();
 }
 }  // namespace protobuf_wyre_2eproto
 namespace wyre {
@@ -52,22 +60,19 @@ namespace proto {
 class DataChunk;
 class DataChunkDefaultTypeInternal;
 extern DataChunkDefaultTypeInternal _DataChunk_default_instance_;
+class Result;
+class ResultDefaultTypeInternal;
+extern ResultDefaultTypeInternal _Result_default_instance_;
+class StartServerSession;
+class StartServerSessionDefaultTypeInternal;
+extern StartServerSessionDefaultTypeInternal _StartServerSession_default_instance_;
+class WyreCommand;
+class WyreCommandDefaultTypeInternal;
+extern WyreCommandDefaultTypeInternal _WyreCommand_default_instance_;
 }  // namespace proto
 }  // namespace wyre
 namespace wyre {
 namespace proto {
-
-enum DataChunk_Source {
-  DataChunk_Source_UNKNOWN = 0,
-  DataChunk_Source_FILE = 1,
-  DataChunk_Source_COMMAND = 2,
-  DataChunk_Source_DataChunk_Source_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
-  DataChunk_Source_DataChunk_Source_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
-};
-bool DataChunk_Source_IsValid(int value);
-const DataChunk_Source DataChunk_Source_Source_MIN = DataChunk_Source_UNKNOWN;
-const DataChunk_Source DataChunk_Source_Source_MAX = DataChunk_Source_COMMAND;
-const int DataChunk_Source_Source_ARRAYSIZE = DataChunk_Source_Source_MAX + 1;
 
 // ===================================================================
 
@@ -149,42 +154,25 @@ class DataChunk : public ::google::protobuf::MessageLite /* @@protoc_insertion_p
 
   // nested types ----------------------------------------------------
 
-  typedef DataChunk_Source Source;
-  static const Source UNKNOWN =
-    DataChunk_Source_UNKNOWN;
-  static const Source FILE =
-    DataChunk_Source_FILE;
-  static const Source COMMAND =
-    DataChunk_Source_COMMAND;
-  static inline bool Source_IsValid(int value) {
-    return DataChunk_Source_IsValid(value);
-  }
-  static const Source Source_MIN =
-    DataChunk_Source_Source_MIN;
-  static const Source Source_MAX =
-    DataChunk_Source_Source_MAX;
-  static const int Source_ARRAYSIZE =
-    DataChunk_Source_Source_ARRAYSIZE;
-
   // accessors -------------------------------------------------------
 
-  // string description = 1;
-  void clear_description();
-  static const int kDescriptionFieldNumber = 1;
-  const ::std::string& description() const;
-  void set_description(const ::std::string& value);
+  // bytes uuid = 1;
+  void clear_uuid();
+  static const int kUuidFieldNumber = 1;
+  const ::std::string& uuid() const;
+  void set_uuid(const ::std::string& value);
   #if LANG_CXX11
-  void set_description(::std::string&& value);
+  void set_uuid(::std::string&& value);
   #endif
-  void set_description(const char* value);
-  void set_description(const char* value, size_t size);
-  ::std::string* mutable_description();
-  ::std::string* release_description();
-  void set_allocated_description(::std::string* description);
+  void set_uuid(const char* value);
+  void set_uuid(const void* value, size_t size);
+  ::std::string* mutable_uuid();
+  ::std::string* release_uuid();
+  void set_allocated_uuid(::std::string* uuid);
 
-  // bytes data = 3;
+  // bytes data = 2;
   void clear_data();
-  static const int kDataFieldNumber = 3;
+  static const int kDataFieldNumber = 2;
   const ::std::string& data() const;
   void set_data(const ::std::string& value);
   #if LANG_CXX11
@@ -195,6 +183,20 @@ class DataChunk : public ::google::protobuf::MessageLite /* @@protoc_insertion_p
   ::std::string* mutable_data();
   ::std::string* release_data();
   void set_allocated_data(::std::string* data);
+
+  // string description = 5;
+  void clear_description();
+  static const int kDescriptionFieldNumber = 5;
+  const ::std::string& description() const;
+  void set_description(const ::std::string& value);
+  #if LANG_CXX11
+  void set_description(::std::string&& value);
+  #endif
+  void set_description(const char* value);
+  void set_description(const char* value, size_t size);
+  ::std::string* mutable_description();
+  ::std::string* release_description();
+  void set_allocated_description(::std::string* description);
 
   // bytes finalHash = 10;
   void clear_finalhash();
@@ -210,18 +212,6 @@ class DataChunk : public ::google::protobuf::MessageLite /* @@protoc_insertion_p
   ::std::string* release_finalhash();
   void set_allocated_finalhash(::std::string* finalhash);
 
-  // .wyre.proto.DataChunk.Source source = 2;
-  void clear_source();
-  static const int kSourceFieldNumber = 2;
-  ::wyre::proto::DataChunk_Source source() const;
-  void set_source(::wyre::proto::DataChunk_Source value);
-
-  // bool finished = 4;
-  void clear_finished();
-  static const int kFinishedFieldNumber = 4;
-  bool finished() const;
-  void set_finished(bool value);
-
   // uint64 fileSize = 11;
   void clear_filesize();
   static const int kFileSizeFieldNumber = 11;
@@ -232,15 +222,322 @@ class DataChunk : public ::google::protobuf::MessageLite /* @@protoc_insertion_p
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr description_;
+  ::google::protobuf::internal::ArenaStringPtr uuid_;
   ::google::protobuf::internal::ArenaStringPtr data_;
+  ::google::protobuf::internal::ArenaStringPtr description_;
   ::google::protobuf::internal::ArenaStringPtr finalhash_;
-  int source_;
-  bool finished_;
   ::google::protobuf::uint64 filesize_;
   mutable int _cached_size_;
   friend struct ::protobuf_wyre_2eproto::TableStruct;
   friend void ::protobuf_wyre_2eproto::InitDefaultsDataChunkImpl();
+};
+// -------------------------------------------------------------------
+
+class WyreCommand : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:wyre.proto.WyreCommand) */ {
+ public:
+  WyreCommand();
+  virtual ~WyreCommand();
+
+  WyreCommand(const WyreCommand& from);
+
+  inline WyreCommand& operator=(const WyreCommand& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  WyreCommand(WyreCommand&& from) noexcept
+    : WyreCommand() {
+    *this = ::std::move(from);
+  }
+
+  inline WyreCommand& operator=(WyreCommand&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const WyreCommand& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const WyreCommand* internal_default_instance() {
+    return reinterpret_cast<const WyreCommand*>(
+               &_WyreCommand_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    1;
+
+  void Swap(WyreCommand* other);
+  friend void swap(WyreCommand& a, WyreCommand& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline WyreCommand* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  WyreCommand* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const WyreCommand& from);
+  void MergeFrom(const WyreCommand& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(WyreCommand* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated string args = 1;
+  int args_size() const;
+  void clear_args();
+  static const int kArgsFieldNumber = 1;
+  const ::std::string& args(int index) const;
+  ::std::string* mutable_args(int index);
+  void set_args(int index, const ::std::string& value);
+  #if LANG_CXX11
+  void set_args(int index, ::std::string&& value);
+  #endif
+  void set_args(int index, const char* value);
+  void set_args(int index, const char* value, size_t size);
+  ::std::string* add_args();
+  void add_args(const ::std::string& value);
+  #if LANG_CXX11
+  void add_args(::std::string&& value);
+  #endif
+  void add_args(const char* value);
+  void add_args(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& args() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_args();
+
+  // bytes uuid = 5;
+  void clear_uuid();
+  static const int kUuidFieldNumber = 5;
+  const ::std::string& uuid() const;
+  void set_uuid(const ::std::string& value);
+  #if LANG_CXX11
+  void set_uuid(::std::string&& value);
+  #endif
+  void set_uuid(const char* value);
+  void set_uuid(const void* value, size_t size);
+  ::std::string* mutable_uuid();
+  ::std::string* release_uuid();
+  void set_allocated_uuid(::std::string* uuid);
+
+  // @@protoc_insertion_point(class_scope:wyre.proto.WyreCommand)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> args_;
+  ::google::protobuf::internal::ArenaStringPtr uuid_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_wyre_2eproto::TableStruct;
+  friend void ::protobuf_wyre_2eproto::InitDefaultsWyreCommandImpl();
+};
+// -------------------------------------------------------------------
+
+class StartServerSession : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:wyre.proto.StartServerSession) */ {
+ public:
+  StartServerSession();
+  virtual ~StartServerSession();
+
+  StartServerSession(const StartServerSession& from);
+
+  inline StartServerSession& operator=(const StartServerSession& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  StartServerSession(StartServerSession&& from) noexcept
+    : StartServerSession() {
+    *this = ::std::move(from);
+  }
+
+  inline StartServerSession& operator=(StartServerSession&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const StartServerSession& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const StartServerSession* internal_default_instance() {
+    return reinterpret_cast<const StartServerSession*>(
+               &_StartServerSession_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    2;
+
+  void Swap(StartServerSession* other);
+  friend void swap(StartServerSession& a, StartServerSession& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline StartServerSession* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  StartServerSession* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const StartServerSession& from);
+  void MergeFrom(const StartServerSession& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(StartServerSession* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:wyre.proto.StartServerSession)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_wyre_2eproto::TableStruct;
+  friend void ::protobuf_wyre_2eproto::InitDefaultsStartServerSessionImpl();
+};
+// -------------------------------------------------------------------
+
+class Result : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:wyre.proto.Result) */ {
+ public:
+  Result();
+  virtual ~Result();
+
+  Result(const Result& from);
+
+  inline Result& operator=(const Result& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  Result(Result&& from) noexcept
+    : Result() {
+    *this = ::std::move(from);
+  }
+
+  inline Result& operator=(Result&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const Result& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Result* internal_default_instance() {
+    return reinterpret_cast<const Result*>(
+               &_Result_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    3;
+
+  void Swap(Result* other);
+  friend void swap(Result& a, Result& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Result* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  Result* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const Result& from);
+  void MergeFrom(const Result& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Result* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:wyre.proto.Result)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  mutable int _cached_size_;
+  friend struct ::protobuf_wyre_2eproto::TableStruct;
+  friend void ::protobuf_wyre_2eproto::InitDefaultsResultImpl();
 };
 // ===================================================================
 
@@ -253,74 +550,60 @@ class DataChunk : public ::google::protobuf::MessageLite /* @@protoc_insertion_p
 #endif  // __GNUC__
 // DataChunk
 
-// string description = 1;
-inline void DataChunk::clear_description() {
-  description_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// bytes uuid = 1;
+inline void DataChunk::clear_uuid() {
+  uuid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& DataChunk::description() const {
-  // @@protoc_insertion_point(field_get:wyre.proto.DataChunk.description)
-  return description_.GetNoArena();
+inline const ::std::string& DataChunk::uuid() const {
+  // @@protoc_insertion_point(field_get:wyre.proto.DataChunk.uuid)
+  return uuid_.GetNoArena();
 }
-inline void DataChunk::set_description(const ::std::string& value) {
+inline void DataChunk::set_uuid(const ::std::string& value) {
   
-  description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:wyre.proto.DataChunk.description)
+  uuid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:wyre.proto.DataChunk.uuid)
 }
 #if LANG_CXX11
-inline void DataChunk::set_description(::std::string&& value) {
+inline void DataChunk::set_uuid(::std::string&& value) {
   
-  description_.SetNoArena(
+  uuid_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:wyre.proto.DataChunk.description)
+  // @@protoc_insertion_point(field_set_rvalue:wyre.proto.DataChunk.uuid)
 }
 #endif
-inline void DataChunk::set_description(const char* value) {
+inline void DataChunk::set_uuid(const char* value) {
   GOOGLE_DCHECK(value != NULL);
   
-  description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:wyre.proto.DataChunk.description)
+  uuid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:wyre.proto.DataChunk.uuid)
 }
-inline void DataChunk::set_description(const char* value, size_t size) {
+inline void DataChunk::set_uuid(const void* value, size_t size) {
   
-  description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+  uuid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:wyre.proto.DataChunk.description)
+  // @@protoc_insertion_point(field_set_pointer:wyre.proto.DataChunk.uuid)
 }
-inline ::std::string* DataChunk::mutable_description() {
+inline ::std::string* DataChunk::mutable_uuid() {
   
-  // @@protoc_insertion_point(field_mutable:wyre.proto.DataChunk.description)
-  return description_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  // @@protoc_insertion_point(field_mutable:wyre.proto.DataChunk.uuid)
+  return uuid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* DataChunk::release_description() {
-  // @@protoc_insertion_point(field_release:wyre.proto.DataChunk.description)
+inline ::std::string* DataChunk::release_uuid() {
+  // @@protoc_insertion_point(field_release:wyre.proto.DataChunk.uuid)
   
-  return description_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return uuid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void DataChunk::set_allocated_description(::std::string* description) {
-  if (description != NULL) {
+inline void DataChunk::set_allocated_uuid(::std::string* uuid) {
+  if (uuid != NULL) {
     
   } else {
     
   }
-  description_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), description);
-  // @@protoc_insertion_point(field_set_allocated:wyre.proto.DataChunk.description)
+  uuid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), uuid);
+  // @@protoc_insertion_point(field_set_allocated:wyre.proto.DataChunk.uuid)
 }
 
-// .wyre.proto.DataChunk.Source source = 2;
-inline void DataChunk::clear_source() {
-  source_ = 0;
-}
-inline ::wyre::proto::DataChunk_Source DataChunk::source() const {
-  // @@protoc_insertion_point(field_get:wyre.proto.DataChunk.source)
-  return static_cast< ::wyre::proto::DataChunk_Source >(source_);
-}
-inline void DataChunk::set_source(::wyre::proto::DataChunk_Source value) {
-  
-  source_ = value;
-  // @@protoc_insertion_point(field_set:wyre.proto.DataChunk.source)
-}
-
-// bytes data = 3;
+// bytes data = 2;
 inline void DataChunk::clear_data() {
   data_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -373,18 +656,57 @@ inline void DataChunk::set_allocated_data(::std::string* data) {
   // @@protoc_insertion_point(field_set_allocated:wyre.proto.DataChunk.data)
 }
 
-// bool finished = 4;
-inline void DataChunk::clear_finished() {
-  finished_ = false;
+// string description = 5;
+inline void DataChunk::clear_description() {
+  description_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline bool DataChunk::finished() const {
-  // @@protoc_insertion_point(field_get:wyre.proto.DataChunk.finished)
-  return finished_;
+inline const ::std::string& DataChunk::description() const {
+  // @@protoc_insertion_point(field_get:wyre.proto.DataChunk.description)
+  return description_.GetNoArena();
 }
-inline void DataChunk::set_finished(bool value) {
+inline void DataChunk::set_description(const ::std::string& value) {
   
-  finished_ = value;
-  // @@protoc_insertion_point(field_set:wyre.proto.DataChunk.finished)
+  description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:wyre.proto.DataChunk.description)
+}
+#if LANG_CXX11
+inline void DataChunk::set_description(::std::string&& value) {
+  
+  description_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:wyre.proto.DataChunk.description)
+}
+#endif
+inline void DataChunk::set_description(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:wyre.proto.DataChunk.description)
+}
+inline void DataChunk::set_description(const char* value, size_t size) {
+  
+  description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:wyre.proto.DataChunk.description)
+}
+inline ::std::string* DataChunk::mutable_description() {
+  
+  // @@protoc_insertion_point(field_mutable:wyre.proto.DataChunk.description)
+  return description_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* DataChunk::release_description() {
+  // @@protoc_insertion_point(field_release:wyre.proto.DataChunk.description)
+  
+  return description_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void DataChunk::set_allocated_description(::std::string* description) {
+  if (description != NULL) {
+    
+  } else {
+    
+  }
+  description_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), description);
+  // @@protoc_insertion_point(field_set_allocated:wyre.proto.DataChunk.description)
 }
 
 // bytes finalHash = 10;
@@ -454,22 +776,154 @@ inline void DataChunk::set_filesize(::google::protobuf::uint64 value) {
   // @@protoc_insertion_point(field_set:wyre.proto.DataChunk.fileSize)
 }
 
+// -------------------------------------------------------------------
+
+// WyreCommand
+
+// repeated string args = 1;
+inline int WyreCommand::args_size() const {
+  return args_.size();
+}
+inline void WyreCommand::clear_args() {
+  args_.Clear();
+}
+inline const ::std::string& WyreCommand::args(int index) const {
+  // @@protoc_insertion_point(field_get:wyre.proto.WyreCommand.args)
+  return args_.Get(index);
+}
+inline ::std::string* WyreCommand::mutable_args(int index) {
+  // @@protoc_insertion_point(field_mutable:wyre.proto.WyreCommand.args)
+  return args_.Mutable(index);
+}
+inline void WyreCommand::set_args(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:wyre.proto.WyreCommand.args)
+  args_.Mutable(index)->assign(value);
+}
+#if LANG_CXX11
+inline void WyreCommand::set_args(int index, ::std::string&& value) {
+  // @@protoc_insertion_point(field_set:wyre.proto.WyreCommand.args)
+  args_.Mutable(index)->assign(std::move(value));
+}
+#endif
+inline void WyreCommand::set_args(int index, const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  args_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:wyre.proto.WyreCommand.args)
+}
+inline void WyreCommand::set_args(int index, const char* value, size_t size) {
+  args_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:wyre.proto.WyreCommand.args)
+}
+inline ::std::string* WyreCommand::add_args() {
+  // @@protoc_insertion_point(field_add_mutable:wyre.proto.WyreCommand.args)
+  return args_.Add();
+}
+inline void WyreCommand::add_args(const ::std::string& value) {
+  args_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:wyre.proto.WyreCommand.args)
+}
+#if LANG_CXX11
+inline void WyreCommand::add_args(::std::string&& value) {
+  args_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:wyre.proto.WyreCommand.args)
+}
+#endif
+inline void WyreCommand::add_args(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  args_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:wyre.proto.WyreCommand.args)
+}
+inline void WyreCommand::add_args(const char* value, size_t size) {
+  args_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:wyre.proto.WyreCommand.args)
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+WyreCommand::args() const {
+  // @@protoc_insertion_point(field_list:wyre.proto.WyreCommand.args)
+  return args_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+WyreCommand::mutable_args() {
+  // @@protoc_insertion_point(field_mutable_list:wyre.proto.WyreCommand.args)
+  return &args_;
+}
+
+// bytes uuid = 5;
+inline void WyreCommand::clear_uuid() {
+  uuid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& WyreCommand::uuid() const {
+  // @@protoc_insertion_point(field_get:wyre.proto.WyreCommand.uuid)
+  return uuid_.GetNoArena();
+}
+inline void WyreCommand::set_uuid(const ::std::string& value) {
+  
+  uuid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:wyre.proto.WyreCommand.uuid)
+}
+#if LANG_CXX11
+inline void WyreCommand::set_uuid(::std::string&& value) {
+  
+  uuid_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:wyre.proto.WyreCommand.uuid)
+}
+#endif
+inline void WyreCommand::set_uuid(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  uuid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:wyre.proto.WyreCommand.uuid)
+}
+inline void WyreCommand::set_uuid(const void* value, size_t size) {
+  
+  uuid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:wyre.proto.WyreCommand.uuid)
+}
+inline ::std::string* WyreCommand::mutable_uuid() {
+  
+  // @@protoc_insertion_point(field_mutable:wyre.proto.WyreCommand.uuid)
+  return uuid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* WyreCommand::release_uuid() {
+  // @@protoc_insertion_point(field_release:wyre.proto.WyreCommand.uuid)
+  
+  return uuid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void WyreCommand::set_allocated_uuid(::std::string* uuid) {
+  if (uuid != NULL) {
+    
+  } else {
+    
+  }
+  uuid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), uuid);
+  // @@protoc_insertion_point(field_set_allocated:wyre.proto.WyreCommand.uuid)
+}
+
+// -------------------------------------------------------------------
+
+// StartServerSession
+
+// -------------------------------------------------------------------
+
+// Result
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace proto
 }  // namespace wyre
-
-namespace google {
-namespace protobuf {
-
-template <> struct is_proto_enum< ::wyre::proto::DataChunk_Source> : ::google::protobuf::internal::true_type {};
-
-}  // namespace protobuf
-}  // namespace google
 
 // @@protoc_insertion_point(global_scope)
 

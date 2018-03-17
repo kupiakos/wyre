@@ -5,8 +5,8 @@
 #include <sstream>
 
 #include <ChildProcess.h>
-#include "winunicode.h"
-#include "wincmdline.h"
+#include "win32/winunicode.h"
+#include "win32/wincmdline.h"
 
 #define ZeroObject(x) do { ZeroMemory(&x, sizeof(x)); } while (0)
 

@@ -23,31 +23,10 @@
     <ClInclude Include="wyre\ChildProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="socket.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="socket_descriptor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="socketbuf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wincmdline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="winunicode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wsasession.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="wyre.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wyre.pb.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="network_error.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SafeResource.h">
@@ -62,6 +41,15 @@
     <ClInclude Include="network_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="wyre.grpc.pb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\winunicode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="win32\wincmdline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wyre\wyre.cpp">
@@ -73,21 +61,6 @@
     <ClCompile Include="SHA1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="socket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="socket_descriptor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="socketbuf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wincmdline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="winunicode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="wyre.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -95,6 +68,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wyre\win32\ChildProcess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wyre.grpc.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="win32\winunicode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="win32\wincmdline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

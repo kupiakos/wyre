@@ -7,7 +7,7 @@
 
 namespace {
 const size_t BLOCK_INTS = 16;  /* number of 32bit integers per SHA1 block */
-const size_t BLOCK_BYTES = BLOCK_INTS * 4;
+const std::streamsize BLOCK_BYTES = BLOCK_INTS * 4;
 
 
 void reset(uint32_t _digest[], std::string &_buffer, uint64_t &_transforms) {
@@ -210,7 +210,7 @@ void SHA1::update(std::istream &is) {
 	while (true) {
 		char sbuf[BLOCK_BYTES];
 		is.read(sbuf, BLOCK_BYTES - _buffer.size());
-		_buffer.append(sbuf, is.gcount());
+		_buffer.append(sbuf, static_cast<size_t>(is.gcount()));
 		if (_buffer.size() != BLOCK_BYTES) {
 			return;
 		}
@@ -232,7 +232,7 @@ std::string SHA1::hexdigest() {
 	uint64_t total_bits = (_transforms*BLOCK_BYTES + _buffer.size()) * 8;
 
 	/* Padding */
-	_buffer += 0x80;
+	_buffer += '\x80';
 	size_t orig_size = _buffer.size();
 	while (_buffer.size() < BLOCK_BYTES) {
 		_buffer += (char)0x00;
@@ -249,7 +249,7 @@ std::string SHA1::hexdigest() {
 	}
 
 	/* Append total_bits, split this uint64_t into two uint32_t */
-	block[BLOCK_INTS - 1] = total_bits;
+	block[BLOCK_INTS - 1] = static_cast<uint32_t>(total_bits & 0xffffffff);
 	block[BLOCK_INTS - 2] = (total_bits >> 32);
 	transform(_digest, block, _transforms);
 

@@ -3,17 +3,26 @@ package wyre.proto;
 option optimize_for = LITE_RUNTIME;
 
 message DataChunk {
-	string description = 1;
+	bytes uuid = 1; // Will be the same for every set of DataChunks
+	bytes data = 2; // The actual payload
 
-	enum Source {
-		UNKNOWN = 0;
-		FILE = 1;    // description contains the file path
-		COMMAND = 2; // description contains the command run
-	}
-	Source source = 2;
-	bytes data = 3; // The actual payload
-	bool finished = 4;
+	string description = 5; // filename/command run
 
 	bytes finalHash = 10; // 20-byte SHA-1 Sum
 	uint64 fileSize = 11;
+}
+
+// Command to run on the client
+message WyreCommand {
+	repeated string args = 1;
+	bytes uuid = 5;
+}
+
+message StartServerSession {}
+message Result {}
+
+service WyreService {
+	rpc ServerSession(StartServerSession) returns (stream WyreCommand);
+	rpc RunCommand(stream DataChunk) returns (Result);
+	rpc UploadFile(stream DataChunk) returns (Result);
 }

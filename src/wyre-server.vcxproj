@@ -94,10 +94,12 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)wyre;$(SolutionDir)include;$(ProjectDir);$(ProjectDir)wyre;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4146</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>GRPC_USE_PROTO_LITE;_WIN32_WINNT=0x0601;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(PlatformShortName);</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libprotobuf-lited.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(PlatformShortName)\$(ConfigurationName)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobuf-lite.lib;crypto.lib;ssl.lib;zlibstatic.lib;gpr.lib;grpc.lib;grpc++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,10 +111,12 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)wyre;$(SolutionDir)include;$(ProjectDir);$(ProjectDir)wyre;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4146</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>GRPC_USE_PROTO_LITE;_WIN32_WINNT=0x0601;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(PlatformShortName);</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libprotobuf-lited.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(PlatformShortName)\$(ConfigurationName)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobuf-lite.lib;crypto.lib;ssl.lib;zlibstatic.lib;gpr.lib;grpc.lib;grpc++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,12 +130,13 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)wyre;$(SolutionDir)include;$(ProjectDir);$(ProjectDir)wyre;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4146</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>GRPC_USE_PROTO_LITE;_WIN32_WINNT=0x0601;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libprotobuf-lite.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(PlatformShortName);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobuf-lite.lib;crypto.lib;ssl.lib;zlibstatic.lib;gpr.lib;grpc.lib;grpc++.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(PlatformShortName)\$(ConfigurationName)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,39 +150,36 @@
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)wyre;$(SolutionDir)include;$(ProjectDir);$(ProjectDir)wyre;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4146</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>GRPC_USE_PROTO_LITE;_WIN32_WINNT=0x0601;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libprotobuf-lite.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(PlatformShortName);</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobuf-lite.lib;crypto.lib;ssl.lib;zlibstatic.lib;gpr.lib;grpc.lib;grpc++.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(PlatformShortName)\$(ConfigurationName)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ConsumerThreadPool.h" />
-    <ClInclude Include="network_error.h" />
+    <ClInclude Include="path_util.h" />
     <ClInclude Include="proto_util.h" />
     <ClInclude Include="SafeResource.h" />
     <ClInclude Include="SHA1.h" />
-    <ClInclude Include="socket.h" />
-    <ClInclude Include="socketbuf.h" />
-    <ClInclude Include="socket_descriptor.h" />
     <ClInclude Include="time_util.h" />
-    <ClInclude Include="wincmdline.h" />
-    <ClInclude Include="winunicode.h" />
-    <ClInclude Include="wsasession.h" />
-    <ClInclude Include="wyre.h" />
+    <ClInclude Include="win32\wincmdline.h" />
+    <ClInclude Include="win32\winunicode.h" />
+    <ClInclude Include="wyre-server\WyreServer.h" />
+    <ClInclude Include="wyre.grpc.pb.h" />
     <ClInclude Include="wyre.pb.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="path_util.cpp" />
     <ClCompile Include="SafeResource.cpp" />
     <ClCompile Include="SHA1.cpp" />
-    <ClCompile Include="socket.cpp" />
-    <ClCompile Include="socketbuf.cpp" />
-    <ClCompile Include="socket_descriptor.cpp" />
-    <ClCompile Include="wincmdline.cpp" />
-    <ClCompile Include="winunicode.cpp" />
+    <ClCompile Include="time_util.cpp" />
+    <ClCompile Include="win32\winunicode.cpp" />
     <ClCompile Include="wyre-server\main.cpp" />
+    <ClCompile Include="wyre-server\WyreServer.cpp" />
+    <ClCompile Include="wyre.grpc.pb.cc" />
     <ClCompile Include="wyre.pb.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

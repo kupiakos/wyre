@@ -15,21 +15,22 @@
 
 #include "wyre.h"
 #include "SafeResource.h"
-#include "wsasession.h"
-#include "socket.h"
-#include "network_error.h"
 #include "ChildProcess.h"
 #include "proto_util.h"
 #include "network_util.h"
-#include "winunicode.h"
 
 #include "SHA1.h"
+#ifdef _WIN32
+#include "win32/winunicode.h"
+#endif
+
+#include "wyre.grpc.pb.h"
 
 namespace wyre {
 
-using wyre::proto::DataChunk;
+using grpc::Status;
 namespace fs = std::experimental::filesystem;
-constexpr size_t BUF_SIZE = 16384;
+constexpr size_t BUF_SIZE = 32768;
 
 inline FILE * utf8Open(const char * filename, const char * mode) {
 #ifdef _WIN32
@@ -48,44 +49,43 @@ inline FILE * utf8Open(const char * filename, const char * mode) {
 #endif
 }
 
-void WyreClient::sendFile(DataChunk & d, FILE *f, FILE *fcopy) {
-	if (!f) { return; }
+
+void WyreClient::sendFile(
+		std::unique_ptr<grpc::ClientWriter<proto::DataChunk>> writer,
+		proto::DataChunk && d, FILE * inputFile, FILE * outputCopy) {
+	if (!inputFile || !writer) { return; }
 
 	SHA1 sha;
 	auto data = std::make_unique<char[]>(BUF_SIZE);
 
-	d.set_finished(false);
-
 	do {
 		size_t nRead = 0;
-		if (!std::feof(f)) {
-			nRead = std::fread(data.get(), 1, BUF_SIZE, f);
+		if (!std::feof(inputFile)) {
+			nRead = std::fread(data.get(), 1, BUF_SIZE, inputFile);
 		}
 		if (nRead > 0) {
 			sha.update(data.get(), nRead);
 			d.set_data(data.get(), nRead);
-			if (fcopy) {
-				std::fwrite(data.get(), 1, nRead, fcopy);
+			if (outputCopy) {
+				std::fwrite(data.get(), 1, nRead, outputCopy);
 			}
 		} else if (nRead < 0) {
 			throw std::runtime_error("Error reading");
 		} else {
 			continue;
 		}
-		if (std::feof(f)) {
-			d.set_finished(true);
+		if (std::feof(inputFile)) {
 			d.set_finalhash(sha.hexdigest());
 		}
-		if (!wyre::proto::writeLengthDelimited(_sock, d)) {
-			throw std::runtime_error("Could not serialize");
+		if (!writer->Write(d)) {
+			break;  // broken stream
 		}
-	} while (!std::feof(f));
-}
-
-void WyreClient::connect(const std::string & hostname, uint16_t port) {
-	std::cerr << "Connecting to " << hostname << ", port "
-		<< port << std::endl;
-	_sock.connect(hostname, port);
+	} while (!std::feof(inputFile));
+	writer->WritesDone();
+	Status status = writer->Finish();
+	if (!status.ok()) {
+		throw std::runtime_error("Send failed");
+	}
 }
 
 void WyreClient::run(std::vector<std::string>& args) {
@@ -94,32 +94,28 @@ void WyreClient::run(std::vector<std::string>& args) {
 	auto processOut = p.stdout_();
 	if (!processOut) { throw std::runtime_error("stdout not defined"); }
 	
-	DataChunk d;
+	grpc::ClientContext ctx;
+	proto::Result res;
+	proto::DataChunk d;
 	d.set_description(p.cmdLine());
-	d.set_source(DataChunk::COMMAND);
 
 	std::cerr << "Running " << p.cmdLine() << std::endl;
-	sendFile(d, processOut, stdout);
-
-	_sock.shutdown(SD_SEND);
-	_sock.close();
+	sendFile(stub_->RunCommand(&ctx, &res), std::move(d), processOut, stdout);
 }
 
 void WyreClient::push(std::vector<std::string>& args) {
-	DataChunk d;
-	d.set_source(DataChunk::FILE);
 
+	grpc::ClientContext ctx;
 	for (const auto & fname : args) {
+		proto::DataChunk d;
+		proto::Result res;
 		SafeFile f = utf8Open(fname.c_str(), "rb");
 		if (!f) {
 			throw std::runtime_error("Could not open file " + fname);
 		}
 		d.set_description(fs::canonical(fname).u8string());
-		sendFile(d, f);
+		sendFile(stub_->UploadFile(&ctx, &res), std::move(d), f);
 	}
-
-	_sock.shutdown(SD_SEND);
-	_sock.close();
 }
 
 
